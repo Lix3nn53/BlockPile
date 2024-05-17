@@ -8,7 +8,7 @@ public class GameGrid : MonoBehaviour
 {
     [SerializeField] private float _offsetX = 1;
     [SerializeField] private float _offsetY = 1;
-    [SerializeField] private float _offsetHeigth = 1;
+    private float _offsetHeigth = 1;
     [SerializeField] private float _cellSize = 1;
     public SerializedDictionary<Vector2Int, GridSlot> Slots = new SerializedDictionary<Vector2Int, GridSlot>();
     private GameObjectPool _gridSlotPool;
@@ -20,6 +20,7 @@ public class GameGrid : MonoBehaviour
     private void Start()
     {
         _gridSlotPool = AssetManager.Instance.GridSlotPool;
+        _offsetHeigth = GameManager.Instance.BlockHeight / 2f;
 
         _unit = _cellSize * Mathf.Sqrt(2);
         _unitHalf = _unit / 2;

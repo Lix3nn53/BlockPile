@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour
     }
   }
 
-  public int BlockHeight;
+  public float BlockHeight;
+  public float BlockWidth;
   public float MoveDuration = 0.5f;
 }

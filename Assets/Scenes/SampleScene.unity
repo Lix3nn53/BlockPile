@@ -144,7 +144,7 @@ PrefabInstance:
     - target: {fileID: 7936994067243328234, guid: bbc60ef9874a8cf429663164f55f1013,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.25
       objectReference: {fileID: 0}
     - target: {fileID: 7936994067243328234, guid: bbc60ef9874a8cf429663164f55f1013,
         type: 3}
@@ -519,7 +519,7 @@ PrefabInstance:
     - target: {fileID: 7936994067243328234, guid: bbc60ef9874a8cf429663164f55f1013,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.25
       objectReference: {fileID: 0}
     - target: {fileID: 7936994067243328234, guid: bbc60ef9874a8cf429663164f55f1013,
         type: 3}
@@ -759,7 +759,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _offsetX: -1.5
   _offsetY: 2
-  _offsetHeigth: 0.5
   _cellSize: 4.2
   Slots:
     _serializedList:
@@ -844,7 +843,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b58c42931dad94488a6aa8546655e73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TARGET_HEIGHT: 5
+  TARGET_HEIGHT: 4
 --- !u!1 &1912560912
 GameObject:
   m_ObjectHideFlags: 0
@@ -877,7 +876,7 @@ MonoBehaviour:
   collectionCheck: 0
   defaultCapacity: 10
   maxSize: 20
-  _prefab: {fileID: 4241829016877010638, guid: 3c6c1fcb8c2104642adaec60bd58e1b2, type: 3}
+  _prefab: {fileID: 2077639045501300543, guid: 4f47f7935bca4954087f81d14832b1bd, type: 3}
 --- !u!4 &1912560914
 Transform:
   m_ObjectHideFlags: 0
@@ -922,7 +921,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff3d68c800b07664989b8d88bc70a72f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BlockHeight: 1
+  BlockHeight: 0.5
+  BlockWidth: 4
   MoveDuration: 0.5
 --- !u!4 &1985585374
 Transform:
@@ -1010,7 +1010,7 @@ PrefabInstance:
     - target: {fileID: 7936994067243328234, guid: bbc60ef9874a8cf429663164f55f1013,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.25
       objectReference: {fileID: 0}
     - target: {fileID: 7936994067243328234, guid: bbc60ef9874a8cf429663164f55f1013,
         type: 3}
