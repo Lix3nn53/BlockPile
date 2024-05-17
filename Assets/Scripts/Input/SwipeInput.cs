@@ -16,13 +16,13 @@ public class SwipeInput : MonoBehaviour
     // References
     private EventManager _eventManager;
     [SerializeField] private float TARGET_HEIGHT = 5f;
-    private float _moveDuration;
+    private float _moveBackDuration;
     private BlockPile _blockPile;
     private Vector3 _startPos;
     private void Start()
     {
         _eventManager = EventManager.Instance;
-        _moveDuration = GameManager.Instance.MoveDuration;
+        _moveBackDuration = GameManager.Instance.MoveBackDuration;
     }
 
     private void Update()
@@ -55,7 +55,7 @@ public class SwipeInput : MonoBehaviour
                 else
                 {
                     // Return to spawner slot
-                    _blockPile.PlaceAnimation(_startPos, _moveDuration);
+                    _blockPile.PlaceAnimation(_startPos, _moveBackDuration, _blockPile.OnMoveBackToSpawner);
                 }
 
                 _blockPile = null;
@@ -88,7 +88,7 @@ public class SwipeInput : MonoBehaviour
             // Hit an active BoardItem hit.collider.gameObject
             BlockPile blockPile = hit.collider.gameObject.GetComponentInParent<BlockPile>();
 
-            if (blockPile != null && blockPile.IsMovable)
+            if (blockPile != null && blockPile.IsPickable)
             {
                 _blockPile = blockPile;
                 _startPos = _blockPile.transform.position;

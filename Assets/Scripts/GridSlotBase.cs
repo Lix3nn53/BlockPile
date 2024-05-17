@@ -6,19 +6,19 @@ using UnityEngine;
 public abstract class GridSlotBase : MonoBehaviour
 {
   [SerializeField] private float _offsetY;
-  private float _moveDuration;
+  private float _placeDuration;
   protected MaterialRecolor _materialRecolor;
 
   public virtual void Start()
   {
-    _moveDuration = GameManager.Instance.MoveDuration;
+    _placeDuration = GameManager.Instance.PlaceDuration;
   }
 
   public void PlaceBlockPile(BlockPile blockPile)
   {
     Vector3 localPos = OnBlockPileStartPlace(blockPile);
 
-    blockPile.PlaceAnimation(transform.position + localPos, _moveDuration, OnBlockPilePlaceFinished);
+    blockPile.PlaceAnimation(transform.position + localPos, _placeDuration, OnBlockPilePlaceFinished);
   }
 
   public void SpawnBlockPile(BlockPile blockPile)

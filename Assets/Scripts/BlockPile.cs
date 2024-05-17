@@ -7,8 +7,8 @@ using System;
 
 public class BlockPile : MonoBehaviour
 {
-  private bool _isMovable = true;
-  public bool IsMovable => _isMovable;
+  private bool _isPickable = true;
+  public bool IsPickable => _isPickable;
   private GameObjectPool _blockPool;
   private float _blockHeight;
 
@@ -33,7 +33,7 @@ public class BlockPile : MonoBehaviour
 
   public void PlaceAnimation(Vector3 targetPos, float duration, Action onComplete = null)
   {
-    _isMovable = false;
+    _isPickable = false;
 
     Tween.Position(transform, targetPos, duration, ease: Ease.OutSine)
       .OnComplete(() =>
@@ -45,7 +45,7 @@ public class BlockPile : MonoBehaviour
 
   public void OnPickUp()
   {
-    _isMovable = false;
+    _isPickable = false;
 
     for (int i = 0; i < transform.childCount; i++)
     {
@@ -60,7 +60,11 @@ public class BlockPile : MonoBehaviour
 
   public void OnPlace()
   {
-    _isMovable = true;
+  }
+
+  public void OnMoveBackToSpawner()
+  {
+    _isPickable = true;
 
     for (int i = 0; i < transform.childCount; i++)
     {
@@ -68,7 +72,7 @@ public class BlockPile : MonoBehaviour
 
       if (block != null)
       {
-        block.OnPlace();
+        block.OnMoveBackToSpawner();
       }
     }
   }
