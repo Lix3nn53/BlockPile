@@ -26,16 +26,24 @@ public class Block : MonoBehaviour
 
   public void Test()
   {
+    Rotate(BlockRotationDirection.RIGHT);
+  }
+
+  public void Rotate(BlockRotationDirection blockRotationDirection)
+  {
+    BlockRotation blockRotation = blockRotationDirection.GetBlockRotation();
+    Vector3 direction = blockRotation.Direction;
+    Vector3 rotation = blockRotation.Rotation;
+
     Transform child = transform.GetChild(0);
 
-    child.position = child.position + (Vector3.left * _width / 2);
-    transform.position = transform.position + (Vector3.right * _width / 2);
+    child.position = child.position + (direction * _width / 2);
+    transform.position = transform.position + (-direction * _width / 2);
 
-    Tween.EulerAngles(transform, startValue: Vector3.zero, endValue: new Vector3(0, 0, -180), duration: 1).OnComplete(() =>
+    Tween.EulerAngles(transform, startValue: Vector3.zero, endValue: rotation, duration: 1).OnComplete(() =>
     {
       transform.SetPositionAndRotation(child.position, Quaternion.identity);
       child.localPosition = Vector3.zero;
     });
-
   }
 }
