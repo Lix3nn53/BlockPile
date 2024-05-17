@@ -33,27 +33,39 @@ public class GridSlot : GridSlotBase
 
   public void TryGetBlockPileFromNeighbours(List<BlockDirection> directionsNotChecked)
   {
+    BlockPile current = BlockPile;
+
+    if (current == null)
+    {
+      return;
+    }
+
+    if (directionsNotChecked.Count == 0)
+    {
+      OnBlockMovementFinished();
+      return;
+    }
+
     List<BlockDirection> copy = new List<BlockDirection>(directionsNotChecked);
 
     foreach (BlockDirection direction in directionsNotChecked)
     {
       copy.Remove(direction);
 
-      if (TryGetBlockPileFromNeighbour(direction, copy))
+      if (TryGetBlockPileFromNeighbour(current, direction, copy))
       {
+        break;
+      }
+
+      if (copy.Count == 0)
+      {
+        OnBlockMovementFinished();
         break;
       }
     }
   }
-  public bool TryGetBlockPileFromNeighbour(BlockDirection direction, List<BlockDirection> directionsNotChecked)
+  public bool TryGetBlockPileFromNeighbour(BlockPile current, BlockDirection direction, List<BlockDirection> directionsNotChecked)
   {
-    BlockPile current = BlockPile;
-
-    if (current == null)
-    {
-      return false;
-    }
-
     Vector2Int gridPosOther = GridPosition + direction.GetGridPositionOffset(GridPosition);
     // Debug.Log("Original: " + GridPosition + " - " + direction + ": " + gridPosOther);
 
@@ -96,8 +108,6 @@ public class GridSlot : GridSlotBase
 
   public void TryMoveTopBlockRecursive(BlockDirection direction, BlockPile current, BlockPile target, List<BlockDirection> directionsNotChecked)
   {
-    Debug.Log("A1: " + direction);
-
     bool moved = false;
     Block topBlock = current.GetTopBlock();
 
@@ -128,5 +138,13 @@ public class GridSlot : GridSlotBase
       GridSlot slotOther = _gameGrid.GetGridSlot(gridPosOther);
       slotOther.TryGetBlockPileFromNeighbours(directionsNotChecked);
     }
+  }
+
+  public void OnBlockMovementFinished()
+  {
+    // Block movement animation is played and finished on this slot
+    // TODO: Check if pile contains more than 10 blocks and remove
+
+    Debug.Log("A: " + GridPosition);
   }
 }
