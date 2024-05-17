@@ -6,6 +6,7 @@ public class MaterialRecolor
 {
   private Renderer _renderer;
   private BlockColorType _blockColor = BlockColorType.GRAY;
+  public BlockColorType BlockColor => _blockColor;
   private MaterialPropertyBlock _propertyBlock;
 
   public MaterialRecolor(Renderer renderer, BlockColorType blockColor)

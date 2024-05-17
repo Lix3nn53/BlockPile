@@ -923,7 +923,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BlockHeight: 0.75
   BlockWidth: 4
-  MoveDuration: 0.5
+  MoveBackDuration: 0.5
+  PlaceDuration: 0.25
+  FlipDuration: 0.2
+  AvailableColors: 0000000005000000
+  Spawners: []
 --- !u!4 &1985585374
 Transform:
   m_ObjectHideFlags: 0

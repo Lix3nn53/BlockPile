@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
 using PrimeTween;
 using UnityEngine;
@@ -8,13 +8,13 @@ public class GridSlot : GridSlotBase
 {
   public static Vector2Int INVALID_POS = new Vector2Int(-999, -999);
   public Vector2Int GridPosition = INVALID_POS;
-  public BlockPile BlockPile => GetComponentInChildren<BlockPile>();
-  public bool CanPlaceBlockPile => BlockPile == null;
+  private GameManager _gameManager;
   private GameGrid _gameGrid;
   public override void Start()
   {
     base.Start();
 
+    _gameManager = GameManager.Instance;
     _gameGrid = GameGrid.Instance;
 
     _materialRecolor = new MaterialRecolor(GetComponent<Renderer>(), BlockColorType.GRAY);
@@ -27,20 +27,25 @@ public class GridSlot : GridSlotBase
 
   public override void OnBlockPilePlaceFinished()
   {
-    TryGetBlockPileFromNeighbours();
+    TryGetBlockPileFromNeighbours(Enum.GetValues(typeof(BlockDirection)).Cast<BlockDirection>().ToList());
+    _gameManager.CheckSpawners();
   }
 
-  public void TryGetBlockPileFromNeighbours()
+  public void TryGetBlockPileFromNeighbours(List<BlockDirection> directionsNotChecked)
   {
-    foreach (BlockDirection direction in Enum.GetValues(typeof(BlockDirection)))
+    List<BlockDirection> copy = new List<BlockDirection>(directionsNotChecked);
+
+    foreach (BlockDirection direction in directionsNotChecked)
     {
-      if (TryGetBlockPileFromNeighbour(direction))
+      copy.Remove(direction);
+
+      if (TryGetBlockPileFromNeighbour(direction, copy))
       {
         break;
       }
     }
   }
-  public bool TryGetBlockPileFromNeighbour(BlockDirection direction)
+  public bool TryGetBlockPileFromNeighbour(BlockDirection direction, List<BlockDirection> directionsNotChecked)
   {
     BlockPile current = BlockPile;
 
@@ -60,7 +65,7 @@ public class GridSlot : GridSlotBase
 
     // Try to move blocks from other slot to this slot
     BlockDirection opposite = direction.Opposite();
-    if (slotOther.TryMoveBlockPileTo(opposite, current))
+    if (slotOther.TryMoveBlockPileTo(opposite, current, directionsNotChecked))
     {
       return true;
     }
@@ -68,7 +73,7 @@ public class GridSlot : GridSlotBase
     return false;
   }
 
-  public bool TryMoveBlockPileTo(BlockDirection direction, BlockPile target)
+  public bool TryMoveBlockPileTo(BlockDirection direction, BlockPile target, List<BlockDirection> directionsNotChecked)
   {
     BlockPile current = BlockPile;
 
@@ -77,34 +82,51 @@ public class GridSlot : GridSlotBase
       return false;
     }
 
-    TryMoveTopBlockRecursive(direction, current, target);
+    TryMoveTopBlockRecursive(direction, current, target, directionsNotChecked);
 
     return true;
   }
 
-  public void OnMoveBlockPileToComplete(BlockDirection direction, BlockPile current, BlockPile target, Block block)
+  public void OnMoveTopBlock(BlockDirection direction, BlockPile current, BlockPile target, Block block, List<BlockDirection> directionsNotChecked)
   {
     target.PlaceBlock(block);
 
-    TryMoveTopBlockRecursive(direction, current, target);
+    TryMoveTopBlockRecursive(direction, current, target, directionsNotChecked);
   }
 
-  public void TryMoveTopBlockRecursive(BlockDirection direction, BlockPile current, BlockPile target)
+  public void TryMoveTopBlockRecursive(BlockDirection direction, BlockPile current, BlockPile target, List<BlockDirection> directionsNotChecked)
   {
+    Debug.Log("A1: " + direction);
+
+    bool moved = false;
     Block topBlock = current.GetTopBlock();
+
     if (topBlock != null)
     {
-      float localY = target.GetNextLocalHeight();
-      topBlock.Move(direction, localY, () => OnMoveBlockPileToComplete(direction, current, target, topBlock));
+      // Try to move top block from current pile to target pile
+
+      if (target.CanMove(topBlock))
+      {
+        float localY = target.GetNextLocalHeight();
+        topBlock.Move(direction, localY, () => OnMoveTopBlock(direction, current, target, topBlock, directionsNotChecked));
+        moved = true;
+      }
     }
     else
     {
+      // current pile is empty
+      // return current pile to pool
       current.gameObject.SetActive(false); // Also returns to pool, so do NOT need to change parent
+    }
 
-      // Try to move target to somewhere?
+    if (!moved)
+    {
+      // Couldnt move from current to target
+      // Try to move to target from other neighbours
+
       Vector2Int gridPosOther = GridPosition + direction.GetGridPositionOffset(GridPosition);
       GridSlot slotOther = _gameGrid.GetGridSlot(gridPosOther);
-      slotOther.TryGetBlockPileFromNeighbours();
+      slotOther.TryGetBlockPileFromNeighbours(directionsNotChecked);
     }
   }
 }

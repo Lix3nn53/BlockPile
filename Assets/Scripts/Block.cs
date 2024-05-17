@@ -9,6 +9,7 @@ public class Block : MonoBehaviour
   private float _duration;
   private float _durationHalf;
   private MaterialRecolor _materialRecolor;
+  public BlockColorType Color => _materialRecolor.BlockColor;
 
   private void Start()
   {
@@ -17,7 +18,7 @@ public class Block : MonoBehaviour
     _duration = GameManager.Instance.FlipDuration;
     _durationHalf = _duration / 2f;
 
-    _materialRecolor = new MaterialRecolor(GetComponentInChildren<Renderer>(), BlockColorTypeExtensions.RandomBlockColor());
+    _materialRecolor = new MaterialRecolor(GetComponentInChildren<Renderer>(), GameManager.Instance.RandomBlockColor());
   }
 
   public void OnPickUp()

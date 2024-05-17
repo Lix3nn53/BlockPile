@@ -46,10 +46,10 @@ public static class BlockColorTypeExtensions
 
     return result;
   }
-  public static BlockColorType RandomBlockColor()
-  {
-    int randomIndex = UnityEngine.Random.Range(0, System.Enum.GetValues(typeof(BlockColorType)).Length - 1);
+  // public static BlockColorType RandomBlockColor()
+  // {
+  //   int randomIndex = UnityEngine.Random.Range(0, System.Enum.GetValues(typeof(BlockColorType)).Length - 1);
 
-    return (BlockColorType)randomIndex;
-  }
+  //   return (BlockColorType)randomIndex;
+  // }
 }

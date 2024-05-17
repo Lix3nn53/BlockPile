@@ -15,8 +15,9 @@ public class BlockPile : MonoBehaviour
   public void Initialize()
   {
     _blockPool = AssetManager.Instance.BlockPool;
-
     _blockHeight = GameManager.Instance.BlockHeight;
+
+    _isPickable = true;
   }
 
   public void SpawnBlock()
@@ -25,9 +26,7 @@ public class BlockPile : MonoBehaviour
     Block block = go.GetComponent<Block>();
 
     block.transform.parent = transform;
-
     block.transform.localPosition = new Vector3(0, _blockHeight * transform.childCount, 0);
-
     block.gameObject.SetActive(true);
   }
 
@@ -103,5 +102,22 @@ public class BlockPile : MonoBehaviour
   public void PlaceBlock(Block block)
   {
     block.transform.parent = transform;
+  }
+
+  public bool CanMove(Block block)
+  {
+    Block topBlock = GetTopBlock();
+
+    if (topBlock == null)
+    {
+      return true;
+    }
+
+    if (topBlock.Color == block.Color)
+    {
+      return true;
+    }
+
+    return false;
   }
 }

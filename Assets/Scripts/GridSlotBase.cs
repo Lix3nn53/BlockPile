@@ -8,6 +8,8 @@ public abstract class GridSlotBase : MonoBehaviour
   [SerializeField] private float _offsetY;
   private float _placeDuration;
   protected MaterialRecolor _materialRecolor;
+  public BlockPile BlockPile => GetComponentInChildren<BlockPile>();
+  public bool CanPlaceBlockPile => BlockPile == null;
 
   public virtual void Start()
   {
@@ -21,7 +23,7 @@ public abstract class GridSlotBase : MonoBehaviour
     blockPile.PlaceAnimation(transform.position + localPos, _placeDuration, OnBlockPilePlaceFinished);
   }
 
-  public void SpawnBlockPile(BlockPile blockPile)
+  public void SetBlockPile(BlockPile blockPile)
   {
     blockPile.transform.localPosition = OnBlockPileStartPlace(blockPile);
     blockPile.gameObject.SetActive(true);
