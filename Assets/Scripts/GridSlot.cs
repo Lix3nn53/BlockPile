@@ -16,6 +16,8 @@ public class GridSlot : GridSlotBase
     base.Start();
 
     _gameGrid = GameGrid.Instance;
+
+    _materialRecolor = new MaterialRecolor(GetComponent<Renderer>(), BlockColorType.GRAY);
   }
 
   public bool IsValid()
@@ -44,10 +46,6 @@ public class GridSlot : GridSlotBase
         Debug.Log(opposite);
         break;
       }
-      Renderer renderer = slotOther.GetComponent<Renderer>();
-      MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
-      propertyBlock.SetColor("_BaseColor", Color.red);
-      renderer.SetPropertyBlock(propertyBlock);
     }
   }
 
@@ -59,11 +57,6 @@ public class GridSlot : GridSlotBase
     {
       return false;
     }
-
-    // Renderer renderer = GetComponent<Renderer>();
-    // MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
-    // propertyBlock.SetColor("_BaseColor", Color.red);
-    // renderer.SetPropertyBlock(propertyBlock);
 
     TryMoveTopBlockRecursive(direction, current, target);
 

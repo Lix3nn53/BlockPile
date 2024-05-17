@@ -20,5 +20,7 @@ public class SpawnerSlot : GridSlotBase
     {
       BlockPile.SpawnBlock();
     }
+
+    _materialRecolor = new MaterialRecolor(GetComponentInChildren<Renderer>(), BlockColorType.GRAY);
   }
 }

@@ -7,6 +7,7 @@ public abstract class GridSlotBase : MonoBehaviour
 {
   [SerializeField] private float _offsetY;
   private float _moveDuration;
+  protected MaterialRecolor _materialRecolor;
 
   public virtual void Start()
   {

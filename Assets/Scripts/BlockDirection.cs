@@ -10,7 +10,7 @@ public enum BlockDirection
   FORWARD,
   BACK
 }
-public static class BlockRotationExtensions
+public static class BlockDirectionExtensions
 {
   public static BlockRotation GetBlockRotation(this BlockDirection direction)
   {

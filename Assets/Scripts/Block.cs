@@ -7,12 +7,15 @@ public class Block : MonoBehaviour
   private Collider _collider;
   private float _width;
   private float _duration;
+  private MaterialRecolor _materialRecolor;
 
   private void Start()
   {
     _collider = GetComponent<Collider>();
     _width = GameManager.Instance.BlockWidth;
     _duration = GameManager.Instance.MoveDuration;
+
+    _materialRecolor = new MaterialRecolor(GetComponentInChildren<Renderer>(), BlockColorTypeExtensions.RandomBlockColor());
   }
 
   public void OnPickUp()
@@ -54,5 +57,10 @@ public class Block : MonoBehaviour
   {
     Tween.LocalPositionY(transform, endValue: localY, duration: _duration, ease: Ease.OutSine);
     Rotate(blockRotationDirection, onComplete);
+  }
+
+  public void SetColor(BlockColorType color)
+  {
+    _materialRecolor.SetColor(color);
   }
 }
