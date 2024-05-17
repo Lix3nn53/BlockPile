@@ -14,9 +14,7 @@ public class SpawnerSlot : GridSlotBase
 
     BlockPile.Initialize();
 
-    PlaceBlockPile(BlockPile, false);
-
-    BlockPile.gameObject.SetActive(true);
+    SpawnBlockPile(BlockPile);
 
     for (int i = 0; i < 1; i++)
     {

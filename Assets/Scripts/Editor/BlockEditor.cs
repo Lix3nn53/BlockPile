@@ -14,25 +14,25 @@ public class BlockEditor : Editor
     if (GUILayout.Button("Rotate LEFT"))
     {
       // Call the method to adjust the orthographic size
-      instance.Rotate(BlockRotationDirection.LEFT);
+      instance.Rotate(BlockDirection.LEFT);
     }
 
     if (GUILayout.Button("Rotate RIGHT"))
     {
       // Call the method to adjust the orthographic size
-      instance.Rotate(BlockRotationDirection.RIGHT);
+      instance.Rotate(BlockDirection.RIGHT);
     }
 
     if (GUILayout.Button("Rotate FORWARD"))
     {
       // Call the method to adjust the orthographic size
-      instance.Rotate(BlockRotationDirection.FORWARD);
+      instance.Rotate(BlockDirection.FORWARD);
     }
 
     if (GUILayout.Button("Rotate BACK"))
     {
       // Call the method to adjust the orthographic size
-      instance.Rotate(BlockRotationDirection.BACK);
+      instance.Rotate(BlockDirection.BACK);
     }
   }
 }

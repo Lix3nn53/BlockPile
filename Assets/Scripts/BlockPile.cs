@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Lix.Core;
 using PrimeTween;
+using System;
 
 public class BlockPile : MonoBehaviour
 {
@@ -30,11 +31,16 @@ public class BlockPile : MonoBehaviour
     block.gameObject.SetActive(true);
   }
 
-  public void PlaceAnimation(Vector3 targetPos, float duration)
+  public void PlaceAnimation(Vector3 targetPos, float duration, Action<BlockPile> onComplete = null)
   {
     _isMovable = false;
 
-    Tween.Position(transform, targetPos, duration, ease: Ease.OutSine).OnComplete(() => OnPlace());
+    Tween.Position(transform, targetPos, duration, ease: Ease.OutSine)
+      .OnComplete(() =>
+      {
+        OnPlace();
+        onComplete?.Invoke(this);
+      });
   }
 
   public void OnPickUp()
@@ -65,5 +71,33 @@ public class BlockPile : MonoBehaviour
         block.OnPlace();
       }
     }
+  }
+
+  public Vector3 GetNextBlockPosition()
+  {
+    return transform.position + new Vector3(0, _blockHeight * (transform.childCount + 1), 0);
+  }
+  public float GetNextLocalHeight()
+  {
+    return _blockHeight * (transform.childCount + 1);
+  }
+
+  public Block GetBlock(int index)
+  {
+    if (index >= transform.childCount || index < 0)
+    {
+      return null;
+    }
+
+    return transform.GetChild(index).GetComponent<Block>();
+  }
+  public Block GetTopBlock()
+  {
+    return GetBlock(transform.childCount - 1);
+  }
+
+  public void PlaceBlock(Block block)
+  {
+    block.transform.parent = transform;
   }
 }

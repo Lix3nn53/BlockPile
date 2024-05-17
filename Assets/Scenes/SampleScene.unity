@@ -434,7 +434,7 @@ MonoBehaviour:
   collectionCheck: 0
   defaultCapacity: 10
   maxSize: 20
-  _prefab: {fileID: 3272857015842435661, guid: 1c7fc87a95973874eb0124decd0559d7, type: 3}
+  _prefab: {fileID: 7486629142668972240, guid: 0d20a211e332f754491154236964158c, type: 3}
 --- !u!4 &827385029
 Transform:
   m_ObjectHideFlags: 0
@@ -759,7 +759,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _offsetX: -1.5
   _offsetY: 2
-  _cellSize: 4.2
+  _cellSize: 4
   Slots:
     _serializedList:
     - Key: {x: 3, y: 1}
@@ -921,7 +921,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff3d68c800b07664989b8d88bc70a72f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BlockHeight: 0.5
+  BlockHeight: 0.75
   BlockWidth: 4
   MoveDuration: 0.5
 --- !u!4 &1985585374

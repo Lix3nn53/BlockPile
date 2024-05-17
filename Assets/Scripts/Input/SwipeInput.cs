@@ -50,7 +50,7 @@ public class SwipeInput : MonoBehaviour
 
                 if (gridSlot != null && gridSlot.CanPlaceBlockPile)
                 {
-                    gridSlot.PlaceBlockPile(_blockPile, true);
+                    gridSlot.PlaceBlockPile(_blockPile);
                 }
                 else
                 {
@@ -106,7 +106,7 @@ public class SwipeInput : MonoBehaviour
         if (Physics.Raycast(ray, out hit))
         {
             // Hit an active BoardItem hit.collider.gameObject
-            GridSlot gridSlot = hit.collider.gameObject.GetComponentInParent<GridSlot>();
+            GridSlot gridSlot = hit.collider.gameObject.GetComponent<GridSlot>();
 
             return gridSlot;
         }

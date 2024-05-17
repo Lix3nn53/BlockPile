@@ -6,8 +6,6 @@ using UnityEngine;
 public abstract class GridSlotBase : MonoBehaviour
 {
   [SerializeField] private float _offsetY;
-  public BlockPile BlockPile => GetComponentInChildren<BlockPile>();
-  public bool CanPlaceBlockPile => BlockPile == null;
   private float _moveDuration;
 
   public virtual void Start()
@@ -15,19 +13,27 @@ public abstract class GridSlotBase : MonoBehaviour
     _moveDuration = GameManager.Instance.MoveDuration;
   }
 
-  public void PlaceBlockPile(BlockPile blockPile, bool withAnimation)
+  public void PlaceBlockPile(BlockPile blockPile)
+  {
+    Vector3 localPos = OnBlockPileStartPlace(blockPile);
+
+    blockPile.PlaceAnimation(transform.position + localPos, _moveDuration, OnBlockPilePlace);
+  }
+
+  public void SpawnBlockPile(BlockPile blockPile)
+  {
+    blockPile.transform.localPosition = OnBlockPileStartPlace(blockPile);
+    blockPile.gameObject.SetActive(true);
+  }
+
+  private Vector3 OnBlockPileStartPlace(BlockPile blockPile)
   {
     blockPile.transform.parent = transform;
+    return new Vector3(0, _offsetY, 0);
+  }
 
-    Vector3 localPos = new Vector3(0, _offsetY, 0);
+  public virtual void OnBlockPilePlace(BlockPile blockPile)
+  {
 
-    if (withAnimation)
-    {
-      blockPile.PlaceAnimation(transform.position + localPos, _moveDuration);
-    }
-    else
-    {
-      blockPile.transform.localPosition = localPos;
-    }
   }
 }
