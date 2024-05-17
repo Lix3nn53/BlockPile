@@ -25,31 +25,50 @@ public class GridSlot : GridSlotBase
     return GridPosition != INVALID_POS;
   }
 
-  public override void OnBlockPilePlace(BlockPile blockPile)
+  public override void OnBlockPilePlaceFinished()
+  {
+    TryGetBlockPileFromNeighbours();
+  }
+
+  public void TryGetBlockPileFromNeighbours()
   {
     foreach (BlockDirection direction in Enum.GetValues(typeof(BlockDirection)))
     {
-      Vector2Int gridPosOther = GridPosition + direction.GetGridPositionOffset(GridPosition);
-      Debug.Log("Original: " + GridPosition + " - " + direction + ": " + gridPosOther);
-
-      GridSlot slotOther = _gameGrid.GetGridSlot(gridPosOther);
-      if (slotOther == null)
+      if (TryGetBlockPileFromNeighbour(direction))
       {
-        continue;
-      }
-
-      // Try to move blocks from other slot to this slot
-      BlockDirection opposite = direction.Opposite();
-      if (slotOther.MoveBlockPileTo(opposite, blockPile))
-      {
-        Debug.Log(direction);
-        Debug.Log(opposite);
         break;
       }
     }
   }
+  public bool TryGetBlockPileFromNeighbour(BlockDirection direction)
+  {
+    BlockPile current = BlockPile;
 
-  public bool MoveBlockPileTo(BlockDirection direction, BlockPile target)
+    if (current == null)
+    {
+      return false;
+    }
+
+    Vector2Int gridPosOther = GridPosition + direction.GetGridPositionOffset(GridPosition);
+    // Debug.Log("Original: " + GridPosition + " - " + direction + ": " + gridPosOther);
+
+    GridSlot slotOther = _gameGrid.GetGridSlot(gridPosOther);
+    if (slotOther == null)
+    {
+      return false;
+    }
+
+    // Try to move blocks from other slot to this slot
+    BlockDirection opposite = direction.Opposite();
+    if (slotOther.TryMoveBlockPileTo(opposite, current))
+    {
+      return true;
+    }
+
+    return false;
+  }
+
+  public bool TryMoveBlockPileTo(BlockDirection direction, BlockPile target)
   {
     BlockPile current = BlockPile;
 
@@ -81,6 +100,11 @@ public class GridSlot : GridSlotBase
     else
     {
       current.gameObject.SetActive(false); // Also returns to pool, so do NOT need to change parent
+
+      // Try to move target to somewhere?
+      Vector2Int gridPosOther = GridPosition + direction.GetGridPositionOffset(GridPosition);
+      GridSlot slotOther = _gameGrid.GetGridSlot(gridPosOther);
+      slotOther.TryGetBlockPileFromNeighbours();
     }
   }
 }

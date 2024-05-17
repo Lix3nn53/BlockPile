@@ -18,7 +18,7 @@ public abstract class GridSlotBase : MonoBehaviour
   {
     Vector3 localPos = OnBlockPileStartPlace(blockPile);
 
-    blockPile.PlaceAnimation(transform.position + localPos, _moveDuration, OnBlockPilePlace);
+    blockPile.PlaceAnimation(transform.position + localPos, _moveDuration, OnBlockPilePlaceFinished);
   }
 
   public void SpawnBlockPile(BlockPile blockPile)
@@ -33,7 +33,7 @@ public abstract class GridSlotBase : MonoBehaviour
     return new Vector3(0, _offsetY, 0);
   }
 
-  public virtual void OnBlockPilePlace(BlockPile blockPile)
+  public virtual void OnBlockPilePlaceFinished()
   {
 
   }

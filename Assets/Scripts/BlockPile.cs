@@ -31,7 +31,7 @@ public class BlockPile : MonoBehaviour
     block.gameObject.SetActive(true);
   }
 
-  public void PlaceAnimation(Vector3 targetPos, float duration, Action<BlockPile> onComplete = null)
+  public void PlaceAnimation(Vector3 targetPos, float duration, Action onComplete = null)
   {
     _isMovable = false;
 
@@ -39,7 +39,7 @@ public class BlockPile : MonoBehaviour
       .OnComplete(() =>
       {
         OnPlace();
-        onComplete?.Invoke(this);
+        onComplete?.Invoke();
       });
   }
 
