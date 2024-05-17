@@ -188,6 +188,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9180923669226501447, guid: bbc60ef9874a8cf429663164f55f1013,
         type: 3}
+      propertyPath: _offsetY
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9180923669226501447, guid: bbc60ef9874a8cf429663164f55f1013,
+        type: 3}
       propertyPath: _blockPool
       value: 
       objectReference: {fileID: 1912560913}
@@ -558,6 +563,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9180923669226501447, guid: bbc60ef9874a8cf429663164f55f1013,
         type: 3}
+      propertyPath: _offsetY
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9180923669226501447, guid: bbc60ef9874a8cf429663164f55f1013,
+        type: 3}
       propertyPath: _blockPool
       value: 
       objectReference: {fileID: 1912560913}
@@ -654,7 +664,7 @@ Transform:
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
   m_LocalRotation: {x: 0.46193978, y: 0.33141357, z: -0.19134171, w: 0.8001032}
-  m_LocalPosition: {x: 0, y: 15, z: 0}
+  m_LocalPosition: {x: -10, y: 40, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -749,8 +759,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _offsetX: -1.5
   _offsetY: 2
-  _offsetHeigth: 0.4
-  _cellSize: 4
+  _offsetHeigth: 0.5
+  _cellSize: 4.2
   Slots:
     _serializedList:
     - Key: {x: 3, y: 1}
@@ -835,7 +845,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TARGET_HEIGHT: 5
-  DURATION: 0.5
 --- !u!1 &1912560912
 GameObject:
   m_ObjectHideFlags: 0
@@ -914,6 +923,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BlockHeight: 1
+  MoveDuration: 0.5
 --- !u!4 &1985585374
 Transform:
   m_ObjectHideFlags: 0
@@ -1040,6 +1050,11 @@ PrefabInstance:
     - target: {fileID: 7936994067243328234, guid: bbc60ef9874a8cf429663164f55f1013,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9180923669226501447, guid: bbc60ef9874a8cf429663164f55f1013,
+        type: 3}
+      propertyPath: _offsetY
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9180923669226501447, guid: bbc60ef9874a8cf429663164f55f1013,

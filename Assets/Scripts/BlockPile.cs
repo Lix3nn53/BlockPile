@@ -2,13 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Lix.Core;
+using PrimeTween;
 
 public class BlockPile : MonoBehaviour
 {
-  public bool IsMovable = false;
+  private bool _isMovable = true;
+  public bool IsMovable => _isMovable;
   private GameObjectPool _blockPool;
-  private List<Block> _blocks = new();
-
   private float _blockHeight;
 
   public void Initialize()
@@ -25,11 +25,45 @@ public class BlockPile : MonoBehaviour
 
     block.transform.parent = transform;
 
-    Vector3 pos = new Vector3(0, _blockHeight * _blocks.Count, 0);
-    block.transform.localPosition = pos;
+    block.transform.localPosition = new Vector3(0, _blockHeight * transform.childCount, 0);
 
     block.gameObject.SetActive(true);
+  }
 
-    _blocks.Add(block);
+  public void PlaceAnimation(Vector3 targetPos, float duration)
+  {
+    _isMovable = false;
+
+    Tween.Position(transform, targetPos, duration, ease: Ease.OutSine).OnComplete(() => OnPlace());
+  }
+
+  public void OnPickUp()
+  {
+    _isMovable = false;
+
+    for (int i = 0; i < transform.childCount; i++)
+    {
+      Block block = transform.GetChild(i).GetComponent<Block>();
+
+      if (block != null)
+      {
+        block.OnPickUp();
+      }
+    }
+  }
+
+  public void OnPlace()
+  {
+    _isMovable = true;
+
+    for (int i = 0; i < transform.childCount; i++)
+    {
+      Block block = transform.GetChild(i).GetComponent<Block>();
+
+      if (block != null)
+      {
+        block.OnPlace();
+      }
+    }
   }
 }

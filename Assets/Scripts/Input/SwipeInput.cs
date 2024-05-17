@@ -16,13 +16,13 @@ public class SwipeInput : MonoBehaviour
     // References
     private EventManager _eventManager;
     [SerializeField] private float TARGET_HEIGHT = 5f;
-    [SerializeField] private float DURATION = 0.5f;
-
+    private float _moveDuration;
     private BlockPile _blockPile;
     private Vector3 _startPos;
     private void Start()
     {
         _eventManager = EventManager.Instance;
+        _moveDuration = GameManager.Instance.MoveDuration;
     }
 
     private void Update()
@@ -35,22 +35,7 @@ public class SwipeInput : MonoBehaviour
             {
                 Vector2 pos = new Vector2(touch.position.x, touch.position.y);
 
-                Ray ray = Camera.main.ScreenPointToRay(pos);
-                Debug.DrawRay(ray.origin, ray.direction * 100, Color.red, 1f);
-
-                RaycastHit hit;
-                if (Physics.Raycast(ray, out hit))
-                {
-                    // Hit an active BoardItem hit.collider.gameObject
-                    BlockPile blockPile = hit.collider.gameObject.GetComponentInParent<BlockPile>();
-
-                    if (blockPile != null && blockPile.IsMovable)
-                    {
-                        _blockPile = blockPile;
-                        _startPos = _blockPile.transform.position;
-                        _blockPile.IsMovable = false;
-                    }
-                }
+                RayBlockPile(pos);
             }
             else if (touch.phase == TouchPhase.Ended)
             {
@@ -59,9 +44,19 @@ public class SwipeInput : MonoBehaviour
                     return;
                 }
 
-                BlockPile blockPile = _blockPile;
+                Vector2 pos = new Vector2(touch.position.x, touch.position.y);
 
-                Tween.Position(_blockPile.transform, _startPos, DURATION, ease: Ease.OutSine).OnComplete(() => blockPile.IsMovable = true);
+                GridSlot gridSlot = RayGridSlot(pos);
+
+                if (gridSlot != null && gridSlot.CanPlaceBlockPile)
+                {
+                    gridSlot.PlaceBlockPile(_blockPile, true);
+                }
+                else
+                {
+                    // Return to spawner slot
+                    _blockPile.PlaceAnimation(_startPos, _moveDuration);
+                }
 
                 _blockPile = null;
             }
@@ -72,16 +67,50 @@ public class SwipeInput : MonoBehaviour
                     return;
                 }
 
+                // Move Current BlockPile
                 Vector2 pos = new Vector2(touch.position.x, touch.position.y);
-
                 Ray ray = Camera.main.ScreenPointToRay(pos);
 
-                Vector3 targetPoint = ray.GetPoint((TARGET_HEIGHT - ray.origin.y) / ray.direction.y);
-
-
-
-                _blockPile.transform.position = targetPoint;
+                _blockPile.transform.position = ray.GetPoint((TARGET_HEIGHT - ray.origin.y) / ray.direction.y);
             }
         }
+    }
+
+    private void RayBlockPile(Vector2 screenPos)
+    {
+        Ray ray = Camera.main.ScreenPointToRay(screenPos);
+
+        Debug.DrawRay(ray.origin, ray.direction * 100, Color.red, 1f);
+
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit))
+        {
+            // Hit an active BoardItem hit.collider.gameObject
+            BlockPile blockPile = hit.collider.gameObject.GetComponentInParent<BlockPile>();
+
+            if (blockPile != null && blockPile.IsMovable)
+            {
+                _blockPile = blockPile;
+                _startPos = _blockPile.transform.position;
+                _blockPile.OnPickUp();
+            }
+        }
+    }
+    private GridSlot RayGridSlot(Vector2 screenPos)
+    {
+        Ray ray = Camera.main.ScreenPointToRay(screenPos);
+
+        Debug.DrawRay(ray.origin, ray.direction * 100, Color.red, 1f);
+
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit))
+        {
+            // Hit an active BoardItem hit.collider.gameObject
+            GridSlot gridSlot = hit.collider.gameObject.GetComponentInParent<GridSlot>();
+
+            return gridSlot;
+        }
+
+        return null;
     }
 }

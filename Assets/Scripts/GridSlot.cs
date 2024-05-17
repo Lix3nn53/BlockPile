@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GridSlot : MonoBehaviour
+public class GridSlot : GridSlotBase
 {
   public static Vector2Int INVALID_POS = new Vector2Int(-999, -999);
   public Vector2Int GridPosition = INVALID_POS;
@@ -11,6 +11,4 @@ public class GridSlot : MonoBehaviour
   {
     return GridPosition != INVALID_POS;
   }
-
-  public List<Block> Blocks;
 }
