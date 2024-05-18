@@ -10,6 +10,7 @@ public class Block : MonoBehaviour
   private float _durationHalf;
   private MaterialRecolor _materialRecolor;
   public BlockColorType Color => _materialRecolor.BlockColor;
+  private Vector3 _startScale;
 
   private void Start()
   {
@@ -19,6 +20,7 @@ public class Block : MonoBehaviour
     _durationHalf = _duration / 2f;
 
     _materialRecolor = new MaterialRecolor(GetComponentInChildren<Renderer>(), GameManager.Instance.RandomBlockColor());
+    _startScale = transform.localScale;
   }
 
   public void OnPickUp()
@@ -29,6 +31,18 @@ public class Block : MonoBehaviour
   public void OnMoveBackToSpawner()
   {
     _collider.enabled = true;
+  }
+
+  public void OnEnable()
+  {
+    // Get From Pool
+    if (_collider != null)
+    {
+      // Start is called
+
+      _collider.enabled = true;
+      transform.localScale = _startScale;
+    }
   }
 
   public void Test()
@@ -58,12 +72,25 @@ public class Block : MonoBehaviour
 
   public void Move(BlockDirection blockRotationDirection, float localY, Action onComplete)
   {
-    Tween.LocalPositionY(transform, endValue: localY, duration: _durationHalf, ease: Ease.OutSine);
+    if (transform.localPosition.y != localY)
+    {
+      Tween.LocalPositionY(transform, endValue: localY, duration: _durationHalf, ease: Ease.OutSine);
+    }
     Rotate(blockRotationDirection, onComplete);
   }
 
   public void SetColor(BlockColorType color)
   {
     _materialRecolor.SetColor(color);
+  }
+
+  public void DestroyAnimation(int index, Action onComplete)
+  {
+    Tween.Scale(transform, endValue: 0, duration: _duration, ease: Ease.OutSine, startDelay: _durationHalf * index)
+      .OnComplete(() =>
+      {
+        gameObject.SetActive(false);
+        onComplete?.Invoke();
+      });
   }
 }

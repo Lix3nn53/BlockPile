@@ -27,11 +27,18 @@ public class GridSlot : GridSlotBase
 
   public override void OnBlockPilePlaceFinished()
   {
-    TryGetBlockPileFromNeighbours(Enum.GetValues(typeof(BlockDirection)).Cast<BlockDirection>().ToList());
+    OnBlockPilePlaceFinished(true);
+  }
+
+  public void OnBlockPilePlaceFinished(bool recursive)
+  {
+    // SetBlockPlacingNeighbour(false);
+
+    TryGetBlockPileFromNeighbours(Enum.GetValues(typeof(BlockDirection)).Cast<BlockDirection>().ToList(), recursive);
     _gameManager.CheckSpawners();
   }
 
-  public void TryGetBlockPileFromNeighbours(List<BlockDirection> directionsNotChecked)
+  public void TryGetBlockPileFromNeighbours(List<BlockDirection> directionsNotChecked, bool recursive)
   {
     BlockPile current = BlockPile;
 
@@ -42,7 +49,7 @@ public class GridSlot : GridSlotBase
 
     if (directionsNotChecked.Count == 0)
     {
-      OnBlockMovementFinished();
+      OnBlockMovementFinished(current, recursive);
       return;
     }
 
@@ -59,7 +66,7 @@ public class GridSlot : GridSlotBase
 
       if (copy.Count == 0)
       {
-        OnBlockMovementFinished();
+        OnBlockMovementFinished(current, recursive);
         break;
       }
     }
@@ -93,6 +100,14 @@ public class GridSlot : GridSlotBase
     {
       return false;
     }
+
+    if (current.IsMovingBlocks)
+    {
+      return false;
+    }
+
+    current.IsMovingBlocks = true;
+    target.IsMovingBlocks = true;
 
     TryMoveTopBlockRecursive(direction, current, target, directionsNotChecked);
 
@@ -136,15 +151,84 @@ public class GridSlot : GridSlotBase
 
       Vector2Int gridPosOther = GridPosition + direction.GetGridPositionOffset(GridPosition);
       GridSlot slotOther = _gameGrid.GetGridSlot(gridPosOther);
-      slotOther.TryGetBlockPileFromNeighbours(directionsNotChecked);
+      slotOther.TryGetBlockPileFromNeighbours(directionsNotChecked, true);
     }
   }
 
-  public void OnBlockMovementFinished()
+  public void OnBlockMovementFinished(BlockPile current, bool recursive)
   {
     // Block movement animation is played and finished on this slot
-    // TODO: Check if pile contains more than 10 blocks and remove
+    // current.OnBlockMovementFinished(() => SetBlockPlacingNeighbour(true));
+    bool destroyed = current.TryDestroy(() => SetIsMovingBlocksNeighbours(false));
 
-    Debug.Log("A: " + GridPosition);
+    if (!destroyed)
+    {
+      if (recursive)
+      {
+        OnBlockPilePlaceFinished(false);
+      }
+      else
+      {
+        SetIsMovingBlocksNeighbours(false);
+      }
+    }
+  }
+
+  // public void SetBlockPlacing(bool isEnabled)
+  // {
+  //   if (isEnabled)
+  //   {
+  //     _materialRecolor.SetColor(BlockColorType.GRAY);
+  //     _disableBlockPlacing = false;
+  //   }
+  //   else
+  //   {
+  //     _materialRecolor.SetColor(BlockColorType.RED);
+  //     _disableBlockPlacing = true;
+  //   }
+  // }
+
+  // public void SetBlockPlacingNeighbours(bool isEnabled)
+  // {
+  //   foreach (BlockDirection direction in Enum.GetValues(typeof(BlockDirection)))
+  //   {
+  //     Vector2Int gridPosOther = GridPosition + direction.GetGridPositionOffset(GridPosition);
+
+  //     GridSlot slotOther = _gameGrid.GetGridSlot(gridPosOther);
+  //     if (slotOther == null)
+  //     {
+  //       continue;
+  //     }
+
+  //     slotOther.SetBlockPlacing(isEnabled);
+  //   }
+  // }
+
+  public void SetIsMovingBlocksNeighbours(bool isEnabled)
+  {
+    BlockPile current = BlockPile;
+
+    if (current != null)
+    {
+      current.IsMovingBlocks = isEnabled;
+    }
+
+    foreach (BlockDirection direction in Enum.GetValues(typeof(BlockDirection)))
+    {
+      Vector2Int gridPosOther = GridPosition + direction.GetGridPositionOffset(GridPosition);
+
+      GridSlot slotOther = _gameGrid.GetGridSlot(gridPosOther);
+      if (slotOther == null)
+      {
+        continue;
+      }
+
+      current = slotOther.BlockPile;
+
+      if (current != null)
+      {
+        current.IsMovingBlocks = isEnabled;
+      }
+    }
   }
 }

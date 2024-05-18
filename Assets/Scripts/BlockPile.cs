@@ -11,6 +11,7 @@ public class BlockPile : MonoBehaviour
   public bool IsPickable => _isPickable;
   private GameObjectPool _blockPool;
   private float _blockHeight;
+  public bool IsMovingBlocks;
 
   public void Initialize()
   {
@@ -18,6 +19,7 @@ public class BlockPile : MonoBehaviour
     _blockHeight = GameManager.Instance.BlockHeight;
 
     _isPickable = true;
+    IsMovingBlocks = false;
   }
 
   public void SpawnBlock()
@@ -115,6 +117,36 @@ public class BlockPile : MonoBehaviour
 
     if (topBlock.Color == block.Color)
     {
+      return true;
+    }
+
+    return false;
+  }
+
+  public bool TryDestroy(Action onComplete)
+  {
+    if (transform.childCount >= 10)
+    {
+      // DestroyAnimation
+
+      for (int i = 0; i < transform.childCount; i++)
+      {
+        Block block = transform.GetChild(i).GetComponent<Block>();
+
+        if (block != null)
+        {
+          if (i == transform.childCount - 1)
+          {
+            // Last index
+            block.DestroyAnimation(transform.childCount - i - 1, onComplete);
+          }
+          else
+          {
+            block.DestroyAnimation(transform.childCount - i - 1, null);
+          }
+        }
+      }
+
       return true;
     }
 
