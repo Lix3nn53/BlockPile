@@ -28,6 +28,7 @@ public class GameManager : MonoBehaviour
   public float PlaceDuration = 0.25f;
   public float FlipDuration = 0.2f;
   public List<BlockColorType> AvailableColors = new();
+  public Vector2Int SpawnAmountRange;
   public List<SpawnerSlot> Spawners = new();
 
   public BlockColorType RandomBlockColor()
@@ -35,6 +36,11 @@ public class GameManager : MonoBehaviour
     int randomIndex = UnityEngine.Random.Range(0, AvailableColors.Count);
 
     return AvailableColors[randomIndex];
+  }
+
+  public int RandomBlockSpawnAmount()
+  {
+    return UnityEngine.Random.Range(SpawnAmountRange.x, SpawnAmountRange.y);
   }
 
   public void CheckSpawners()

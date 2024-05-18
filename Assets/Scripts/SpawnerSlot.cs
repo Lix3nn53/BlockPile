@@ -30,11 +30,11 @@ public class SpawnerSlot : GridSlotBase
 
     BlockPile.Initialize();
 
-    SetBlockPile(BlockPile);
-
     for (int i = 0; i < 1; i++)
     {
       BlockPile.SpawnBlock();
     }
+
+    SetBlockPile(BlockPile);
   }
 }

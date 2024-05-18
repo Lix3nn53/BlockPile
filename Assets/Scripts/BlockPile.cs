@@ -24,11 +24,26 @@ public class BlockPile : MonoBehaviour
 
   public void SpawnBlock()
   {
+    BlockColorType color = GameManager.Instance.RandomBlockColor();
+
+    int amount = GameManager.Instance.RandomBlockSpawnAmount();
+    for (int i = 0; i < amount; i++)
+    {
+      SpawnBlock(color);
+    }
+  }
+
+  public void SpawnBlock(BlockColorType color)
+  {
     GameObject go = _blockPool.Pool.Get();
     Block block = go.GetComponent<Block>();
 
     block.transform.parent = transform;
+
+    Debug.Log("transform.childCount: " + transform.childCount, gameObject);
+
     block.transform.localPosition = new Vector3(0, _blockHeight * transform.childCount, 0);
+    block.SetColor(color);
     block.gameObject.SetActive(true);
   }
 
@@ -125,24 +140,30 @@ public class BlockPile : MonoBehaviour
 
   public bool TryDestroy(Action onComplete)
   {
-    if (transform.childCount >= 10)
+    int childCount = transform.childCount;
+    if (childCount >= 10)
     {
       // DestroyAnimation
 
-      for (int i = 0; i < transform.childCount; i++)
+
+      for (int i = 0; i < childCount; i++)
       {
         Block block = transform.GetChild(i).GetComponent<Block>();
 
         if (block != null)
         {
-          if (i == transform.childCount - 1)
+          if (i == 0)
           {
             // Last index
-            block.DestroyAnimation(transform.childCount - i - 1, onComplete);
+            block.DestroyAnimation(childCount - i - 1, () =>
+            {
+              gameObject.SetActive(false); // Disable self and return to pool
+              onComplete?.Invoke();
+            });
           }
           else
           {
-            block.DestroyAnimation(transform.childCount - i - 1, null);
+            block.DestroyAnimation(childCount - i - 1, null);
           }
         }
       }

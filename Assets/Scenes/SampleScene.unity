@@ -432,8 +432,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   collectionCheck: 0
-  defaultCapacity: 10
-  maxSize: 20
+  defaultCapacity: 100
+  maxSize: 1000
   _prefab: {fileID: 7486629142668972240, guid: 0d20a211e332f754491154236964158c, type: 3}
 --- !u!4 &827385029
 Transform:
@@ -495,8 +495,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   collectionCheck: 0
-  defaultCapacity: 10
-  maxSize: 20
+  defaultCapacity: 100
+  maxSize: 1000
   _prefab: {fileID: 2459431749926453301, guid: 14f320514282cf24db63b6f407d6cd44, type: 3}
 --- !u!1001 &934936768
 PrefabInstance:
@@ -874,8 +874,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   collectionCheck: 0
-  defaultCapacity: 10
-  maxSize: 20
+  defaultCapacity: 100
+  maxSize: 1000
   _prefab: {fileID: 2077639045501300543, guid: 4f47f7935bca4954087f81d14832b1bd, type: 3}
 --- !u!4 &1912560914
 Transform:
@@ -927,6 +927,7 @@ MonoBehaviour:
   PlaceDuration: 0.25
   FlipDuration: 0.2
   AvailableColors: 0000000005000000
+  SpawnAmountRange: {x: 4, y: 8}
   Spawners: []
 --- !u!4 &1985585374
 Transform:

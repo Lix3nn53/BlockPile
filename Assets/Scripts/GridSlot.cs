@@ -159,16 +159,18 @@ public class GridSlot : GridSlotBase
   {
     // Block movement animation is played and finished on this slot
     // current.OnBlockMovementFinished(() => SetBlockPlacingNeighbour(true));
-    bool destroyed = current.TryDestroy(() => SetIsMovingBlocksNeighbours(false));
 
-    if (!destroyed)
+    if (recursive)
     {
-      if (recursive)
+      OnBlockPilePlaceFinished(false);
+    }
+    else
+    {
+      bool destroyed = current.TryDestroy(() => SetIsMovingBlocksNeighbours(false));
+
+      if (!destroyed)
       {
-        OnBlockPilePlaceFinished(false);
-      }
-      else
-      {
+        // TryDestroy doesnt call this if not destroyed so we call it here
         SetIsMovingBlocksNeighbours(false);
       }
     }

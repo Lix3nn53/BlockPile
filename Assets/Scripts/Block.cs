@@ -19,8 +19,9 @@ public class Block : MonoBehaviour
     _duration = GameManager.Instance.FlipDuration;
     _durationHalf = _duration / 2f;
 
-    _materialRecolor = new MaterialRecolor(GetComponentInChildren<Renderer>(), GameManager.Instance.RandomBlockColor());
     _startScale = transform.localScale;
+
+    // SetColor(GameManager.Instance.RandomBlockColor());
   }
 
   public void OnPickUp()
@@ -33,7 +34,7 @@ public class Block : MonoBehaviour
     _collider.enabled = true;
   }
 
-  public void OnEnable()
+  private void OnEnable()
   {
     // Get From Pool
     if (_collider != null)
@@ -81,7 +82,14 @@ public class Block : MonoBehaviour
 
   public void SetColor(BlockColorType color)
   {
-    _materialRecolor.SetColor(color);
+    if (_materialRecolor == null)
+    {
+      _materialRecolor = new MaterialRecolor(GetComponentInChildren<Renderer>(), color);
+    }
+    else
+    {
+      _materialRecolor.SetColor(color);
+    }
   }
 
   public void DestroyAnimation(int index, Action onComplete)
@@ -89,6 +97,7 @@ public class Block : MonoBehaviour
     Tween.Scale(transform, endValue: 0, duration: _duration, ease: Ease.OutSine, startDelay: _durationHalf * index)
       .OnComplete(() =>
       {
+        transform.parent = null;
         gameObject.SetActive(false);
         onComplete?.Invoke();
       });
