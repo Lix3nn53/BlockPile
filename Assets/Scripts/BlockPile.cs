@@ -40,8 +40,6 @@ public class BlockPile : MonoBehaviour
 
     block.transform.parent = transform;
 
-    Debug.Log("transform.childCount: " + transform.childCount, gameObject);
-
     block.transform.localPosition = new Vector3(0, _blockHeight * transform.childCount, 0);
     block.SetColor(color);
     block.gameObject.SetActive(true);
@@ -157,6 +155,7 @@ public class BlockPile : MonoBehaviour
             // Last index
             block.DestroyAnimation(childCount - i - 1, () =>
             {
+              transform.parent = null;
               gameObject.SetActive(false); // Disable self and return to pool
               onComplete?.Invoke();
             });
