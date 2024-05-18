@@ -98,7 +98,7 @@ public class Block : MonoBehaviour
 
   public void DestroyAnimation(int index, Action onComplete)
   {
-    Tween.Scale(transform, endValue: 0, duration: _durationDestroy * (index + 1), ease: _easeDestroy)
+    Tween.Scale(transform, endValue: 0, duration: _durationDestroy * (index + 1), ease: _easeDestroy, startDelay: _durationDestroy * (index + 1))
       .OnComplete(() =>
       {
         transform.parent = null;

@@ -188,8 +188,13 @@ public class GridSlot : GridSlotBase
     }
     else
     {
-      current.TryDestroy();
+      current.TryDestroy(OnCompleteWithBlocksRemaining);
     }
+  }
+  public void OnCompleteWithBlocksRemaining()
+  {
+    List<BlockDirection> directionsNotCheckedTryMove = Enum.GetValues(typeof(BlockDirection)).Cast<BlockDirection>().ToList();
+    TryMoveBlockPileToNeighbours(directionsNotCheckedTryMove, false);
   }
 
   public void TryMoveBlockPileToNeighbours(List<BlockDirection> directionsNotChecked, bool recursive)

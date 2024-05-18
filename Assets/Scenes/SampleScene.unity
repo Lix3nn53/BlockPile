@@ -927,7 +927,10 @@ MonoBehaviour:
   PlaceDuration: 0.25
   FlipDuration: 0.2
   AvailableColors: 0000000005000000
-  SpawnAmountRange: {x: 4, y: 8}
+  SpawnColorAmountRange: {x: 2, y: 4}
+  SpawnAmountPerColorRange: {x: 2, y: 4}
+  EaseDefault: 3
+  EaseDestroy: 3
   Spawners: []
 --- !u!4 &1985585374
 Transform:

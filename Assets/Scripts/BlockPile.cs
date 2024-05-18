@@ -50,13 +50,20 @@ public class BlockPile : MonoBehaviour
 
     for (int i = 0; i < colorAmount; i++)
     {
-      BlockColorType color = GameManager.Instance.RandomBlockColor(alreadyUsedColors);
-      alreadyUsedColors.Add(color);
+      BlockColorType? color = GameManager.Instance.RandomBlockColor(alreadyUsedColors);
+
+      if (!color.HasValue)
+      {
+        // Used all available colors from GameManager
+        break;
+      }
+
+      alreadyUsedColors.Add(color.Value);
 
       int amount = GameManager.Instance.RandomSpawnAmountPerColor();
       for (int y = 0; y < amount; y++)
       {
-        SpawnBlock(color);
+        SpawnBlock(color.Value);
       }
     }
   }
@@ -191,7 +198,7 @@ public class BlockPile : MonoBehaviour
     return count;
   }
 
-  public bool TryDestroy()
+  public bool TryDestroy(Action onCompleteWithBlocksRemaining)
   {
     int topColorCount = CountTopColor();
     if (topColorCount >= 10)
@@ -214,6 +221,8 @@ public class BlockPile : MonoBehaviour
             break;
           }
 
+
+
           if (i == 0)
           {
             // Last block
@@ -222,6 +231,15 @@ public class BlockPile : MonoBehaviour
               IsMovingBlocks = false;
               transform.parent = null;
               gameObject.SetActive(false); // Disable self and return to pool
+            });
+          }
+          else if (i == childCount - topColorCount)
+          {
+            // Last block of current color
+            block.DestroyAnimation(childCount - 1 - i, () =>
+            {
+              IsMovingBlocks = false;
+              onCompleteWithBlocksRemaining?.Invoke();
             });
           }
           else

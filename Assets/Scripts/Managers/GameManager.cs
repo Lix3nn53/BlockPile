@@ -35,7 +35,7 @@ public class GameManager : MonoBehaviour
   public Ease EaseDestroy = Ease.OutSine;
   [HideInInspector] public List<SpawnerSlot> Spawners = new();
 
-  public BlockColorType RandomBlockColor(List<BlockColorType> alreadyUsedColors)
+  public BlockColorType? RandomBlockColor(List<BlockColorType> alreadyUsedColors)
   {
     List<BlockColorType> available;
     if (alreadyUsedColors != null)
@@ -45,6 +45,11 @@ public class GameManager : MonoBehaviour
     else
     {
       available = AvailableColors;
+    }
+
+    if (available.Count == 0)
+    {
+      return null;
     }
 
     int randomIndex = UnityEngine.Random.Range(0, available.Count);
