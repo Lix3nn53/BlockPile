@@ -11,7 +11,25 @@ public class BlockPile : MonoBehaviour
   public bool IsPickable => _isPickable;
   private GameObjectPool _blockPool;
   private float _blockHeight;
-  public bool IsMovingBlocks;
+  private bool _isMovingBlocks;
+  public bool IsMovingBlocks
+  {
+    get
+    {
+      return _isMovingBlocks;
+    }
+    set
+    {
+      _isMovingBlocks = value;
+
+      GridSlot slot = GetComponentInParent<GridSlot>();
+      if (slot != null)
+      {
+        BlockColorType color = _isMovingBlocks ? BlockColorType.RED : BlockColorType.GRAY;
+        slot.MaterialRecolor.SetColor(color);
+      }
+    }
+  }
 
   public void Initialize()
   {
@@ -136,13 +154,13 @@ public class BlockPile : MonoBehaviour
     return false;
   }
 
-  public bool TryDestroy(Action onComplete)
+  public bool TryDestroy()
   {
     int childCount = transform.childCount;
     if (childCount >= 10)
     {
       // DestroyAnimation
-
+      IsMovingBlocks = true;
 
       for (int i = 0; i < childCount; i++)
       {
@@ -152,12 +170,12 @@ public class BlockPile : MonoBehaviour
         {
           if (i == 0)
           {
-            // Last index
+            // Last block
             block.DestroyAnimation(childCount - i - 1, () =>
             {
+              IsMovingBlocks = false;
               transform.parent = null;
               gameObject.SetActive(false); // Disable self and return to pool
-              onComplete?.Invoke();
             });
           }
           else

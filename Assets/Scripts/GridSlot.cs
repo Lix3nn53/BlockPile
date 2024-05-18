@@ -17,7 +17,7 @@ public class GridSlot : GridSlotBase
     _gameManager = GameManager.Instance;
     _gameGrid = GameGrid.Instance;
 
-    _materialRecolor = new MaterialRecolor(GetComponent<Renderer>(), BlockColorType.GRAY);
+    MaterialRecolor = new MaterialRecolor(GetComponent<Renderer>(), BlockColorType.GRAY);
   }
 
   public bool IsValid()
@@ -100,15 +100,13 @@ public class GridSlot : GridSlotBase
       return false;
     }
 
-    if (current.IsMovingBlocks)
+    if (target.IsMovingBlocks)
     {
       return false;
     }
 
     current.IsMovingBlocks = true;
     target.IsMovingBlocks = true;
-    // Debug.Log("A1", current);
-    // Debug.Log("A2", target);
 
     return TryMoveTopBlockRecursive(direction, current, target, directionsNotChecked, false);
   }
@@ -142,8 +140,16 @@ public class GridSlot : GridSlotBase
     {
       // current pile is empty
       // return current pile to pool
+      current.IsMovingBlocks = false;
       current.transform.parent = null;
       current.gameObject.SetActive(false);
+    }
+
+
+    if (!moved)
+    {
+      current.IsMovingBlocks = false;
+      target.IsMovingBlocks = false;
     }
 
     if (!moved && movedBefore)
@@ -162,12 +168,6 @@ public class GridSlot : GridSlotBase
       targetSlot.TryMoveBlockPileToNeighbours(directionsNotCheckedTryMove, false);
     }
 
-    if (!moved)
-    {
-      current.IsMovingBlocks = false;
-      target.IsMovingBlocks = false;
-    }
-
     return moved;
   }
 
@@ -183,77 +183,12 @@ public class GridSlot : GridSlotBase
     }
     else
     {
-      bool destroyed = current.TryDestroy(() => SetIsMovingBlocksNeighbours(false));
-
-      if (!destroyed)
-      {
-        // TryDestroy doesnt call this if not destroyed so we call it here
-        SetIsMovingBlocksNeighbours(false);
-      }
-    }
-  }
-
-  // public void SetBlockPlacing(bool isEnabled)
-  // {
-  //   if (isEnabled)
-  //   {
-  //     _materialRecolor.SetColor(BlockColorType.GRAY);
-  //     _disableBlockPlacing = false;
-  //   }
-  //   else
-  //   {
-  //     _materialRecolor.SetColor(BlockColorType.RED);
-  //     _disableBlockPlacing = true;
-  //   }
-  // }
-
-  // public void SetBlockPlacingNeighbours(bool isEnabled)
-  // {
-  //   foreach (BlockDirection direction in Enum.GetValues(typeof(BlockDirection)))
-  //   {
-  //     Vector2Int gridPosOther = GridPosition + direction.GetGridPositionOffset(GridPosition);
-
-  //     GridSlot slotOther = _gameGrid.GetGridSlot(gridPosOther);
-  //     if (slotOther == null)
-  //     {
-  //       continue;
-  //     }
-
-  //     slotOther.SetBlockPlacing(isEnabled);
-  //   }
-  // }
-
-  public void SetIsMovingBlocksNeighbours(bool isEnabled)
-  {
-    BlockPile current = BlockPile;
-
-    if (current != null)
-    {
-      current.IsMovingBlocks = isEnabled;
-    }
-
-    foreach (BlockDirection direction in Enum.GetValues(typeof(BlockDirection)))
-    {
-      Vector2Int gridPosOther = GridPosition + direction.GetGridPositionOffset(GridPosition);
-
-      GridSlot slotOther = _gameGrid.GetGridSlot(gridPosOther);
-      if (slotOther == null)
-      {
-        continue;
-      }
-
-      current = slotOther.BlockPile;
-
-      if (current != null)
-      {
-        current.IsMovingBlocks = isEnabled;
-      }
+      current.TryDestroy();
     }
   }
 
   public void TryMoveBlockPileToNeighbours(List<BlockDirection> directionsNotChecked, bool recursive)
   {
-    SetIsMovingBlocksNeighbours(false);
     BlockPile current = BlockPile;
 
     if (current == null)

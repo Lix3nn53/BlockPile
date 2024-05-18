@@ -12,7 +12,7 @@ public class SpawnerSlot : GridSlotBase
     base.Start();
 
     // Color
-    _materialRecolor = new MaterialRecolor(GetComponentInChildren<Renderer>(), BlockColorType.GRAY);
+    MaterialRecolor = new MaterialRecolor(GetComponentInChildren<Renderer>(), BlockColorType.GRAY);
 
     // Add self to GameManager
     GameManager.Instance.Spawners.Add(this);

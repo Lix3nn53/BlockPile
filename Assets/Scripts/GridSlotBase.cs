@@ -7,7 +7,7 @@ public abstract class GridSlotBase : MonoBehaviour
 {
   [SerializeField] private float _offsetY;
   private float _placeDuration;
-  protected MaterialRecolor _materialRecolor;
+  public MaterialRecolor MaterialRecolor;
   public BlockPile BlockPile => GetComponentInChildren<BlockPile>();
   public bool CanPlaceBlockPile => BlockPile == null;
 
