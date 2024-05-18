@@ -154,6 +154,7 @@ public class GridSlot : GridSlotBase
 
     if (!moved && movedBefore)
     {
+      Debug.Log("AAAAA", gameObject);
       // Couldnt move from current to target
       // Try to move to target from other neighbours
 
@@ -166,6 +167,10 @@ public class GridSlot : GridSlotBase
       // directionsNotCheckedTryMove.Remove(direction.Opposite());
 
       targetSlot.TryMoveBlockPileToNeighbours(directionsNotCheckedTryMove, false);
+      if (topBlock != null)
+      {
+        TryMoveBlockPileToNeighbours(directionsNotCheckedTryMove, false);
+      }
     }
 
     return moved;

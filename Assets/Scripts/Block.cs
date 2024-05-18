@@ -7,7 +7,9 @@ public class Block : MonoBehaviour
   private Collider _collider;
   private float _width;
   private float _duration;
-  private float _durationHalf;
+  private float _durationDestroy;
+  private Ease _ease;
+  private Ease _easeDestroy;
   private MaterialRecolor _materialRecolor;
   public BlockColorType Color => _materialRecolor.BlockColor;
   private Vector3 _startScale;
@@ -17,7 +19,9 @@ public class Block : MonoBehaviour
     _collider = GetComponent<Collider>();
     _width = GameManager.Instance.BlockWidth;
     _duration = GameManager.Instance.FlipDuration;
-    _durationHalf = _duration / 2f;
+    _ease = GameManager.Instance.EaseDefault;
+    _easeDestroy = GameManager.Instance.EaseDestroy;
+    _durationDestroy = _duration / 2f;
 
     _startScale = transform.localScale;
 
@@ -62,7 +66,7 @@ public class Block : MonoBehaviour
     child.position = child.position + (direction * _width / 2);
     transform.position = transform.position + (-direction * _width / 2);
 
-    Tween.EulerAngles(transform, startValue: Vector3.zero, endValue: rotation, duration: _duration, ease: Ease.OutSine).OnComplete(() =>
+    Tween.EulerAngles(transform, startValue: Vector3.zero, endValue: rotation, duration: _duration, ease: _ease).OnComplete(() =>
     {
       transform.SetPositionAndRotation(child.position, Quaternion.identity);
       child.localPosition = Vector3.zero;
@@ -75,7 +79,7 @@ public class Block : MonoBehaviour
   {
     if (transform.localPosition.y != localY)
     {
-      Tween.LocalPositionY(transform, endValue: localY, duration: _durationHalf, ease: Ease.OutSine);
+      Tween.LocalPositionY(transform, endValue: localY, duration: _durationDestroy, ease: _ease);
     }
     Rotate(blockRotationDirection, onComplete);
   }
@@ -94,7 +98,7 @@ public class Block : MonoBehaviour
 
   public void DestroyAnimation(int index, Action onComplete)
   {
-    Tween.Scale(transform, endValue: 0, duration: _duration, ease: Ease.OutSine, startDelay: _durationHalf * index)
+    Tween.Scale(transform, endValue: 0, duration: _durationDestroy * (index + 1), ease: _easeDestroy)
       .OnComplete(() =>
       {
         transform.parent = null;

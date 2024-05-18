@@ -11,6 +11,7 @@ public class BlockPile : MonoBehaviour
   public bool IsPickable => _isPickable;
   private GameObjectPool _blockPool;
   private float _blockHeight;
+  private Ease _ease;
   private bool _isMovingBlocks;
   public bool IsMovingBlocks
   {
@@ -35,6 +36,7 @@ public class BlockPile : MonoBehaviour
   {
     _blockPool = AssetManager.Instance.BlockPool;
     _blockHeight = GameManager.Instance.BlockHeight;
+    _ease = GameManager.Instance.EaseDefault;
 
     _isPickable = true;
     IsMovingBlocks = false;
@@ -42,12 +44,20 @@ public class BlockPile : MonoBehaviour
 
   public void SpawnBlock()
   {
-    BlockColorType color = GameManager.Instance.RandomBlockColor();
+    List<BlockColorType> alreadyUsedColors = new List<BlockColorType>();
 
-    int amount = GameManager.Instance.RandomBlockSpawnAmount();
-    for (int i = 0; i < amount; i++)
+    int colorAmount = GameManager.Instance.RandomSpawnColorAmount();
+
+    for (int i = 0; i < colorAmount; i++)
     {
-      SpawnBlock(color);
+      BlockColorType color = GameManager.Instance.RandomBlockColor(alreadyUsedColors);
+      alreadyUsedColors.Add(color);
+
+      int amount = GameManager.Instance.RandomSpawnAmountPerColor();
+      for (int y = 0; y < amount; y++)
+      {
+        SpawnBlock(color);
+      }
     }
   }
 
@@ -154,24 +164,60 @@ public class BlockPile : MonoBehaviour
     return false;
   }
 
+  private int CountTopColor()
+  {
+    Block topBlock = GetTopBlock();
+    BlockColorType color = topBlock.Color;
+
+    int count = 0;
+
+    int childCount = transform.childCount;
+
+    for (int i = childCount - 1; i >= 0; i--)
+    {
+      Block block = transform.GetChild(i).GetComponent<Block>();
+
+      if (block != null)
+      {
+        if (color != block.Color)
+        {
+          break;
+        }
+
+        count++;
+      }
+    }
+
+    return count;
+  }
+
   public bool TryDestroy()
   {
-    int childCount = transform.childCount;
-    if (childCount >= 10)
+    int topColorCount = CountTopColor();
+    if (topColorCount >= 10)
     {
       // DestroyAnimation
       IsMovingBlocks = true;
 
-      for (int i = 0; i < childCount; i++)
+      Block topBlock = GetTopBlock();
+      BlockColorType color = topBlock.Color;
+
+      int childCount = transform.childCount;
+      for (int i = childCount - 1; i >= 0; i--)
       {
         Block block = transform.GetChild(i).GetComponent<Block>();
 
         if (block != null)
         {
+          if (color != block.Color)
+          {
+            break;
+          }
+
           if (i == 0)
           {
             // Last block
-            block.DestroyAnimation(childCount - i - 1, () =>
+            block.DestroyAnimation(childCount - 1 - i, () =>
             {
               IsMovingBlocks = false;
               transform.parent = null;
@@ -180,7 +226,7 @@ public class BlockPile : MonoBehaviour
           }
           else
           {
-            block.DestroyAnimation(childCount - i - 1, null);
+            block.DestroyAnimation(childCount - 1 - i, null);
           }
         }
       }

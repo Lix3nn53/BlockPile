@@ -1,6 +1,7 @@
 using System;
-using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
+using PrimeTween;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -28,19 +29,37 @@ public class GameManager : MonoBehaviour
   public float PlaceDuration = 0.25f;
   public float FlipDuration = 0.2f;
   public List<BlockColorType> AvailableColors = new();
-  public Vector2Int SpawnAmountRange;
-  public List<SpawnerSlot> Spawners = new();
+  public Vector2Int SpawnColorAmountRange;
+  public Vector2Int SpawnAmountPerColorRange;
+  public Ease EaseDefault = Ease.OutSine;
+  public Ease EaseDestroy = Ease.OutSine;
+  [HideInInspector] public List<SpawnerSlot> Spawners = new();
 
-  public BlockColorType RandomBlockColor()
+  public BlockColorType RandomBlockColor(List<BlockColorType> alreadyUsedColors)
   {
-    int randomIndex = UnityEngine.Random.Range(0, AvailableColors.Count);
+    List<BlockColorType> available;
+    if (alreadyUsedColors != null)
+    {
+      available = AvailableColors.Except(alreadyUsedColors).ToList();
+    }
+    else
+    {
+      available = AvailableColors;
+    }
 
-    return AvailableColors[randomIndex];
+    int randomIndex = UnityEngine.Random.Range(0, available.Count);
+
+    return available[randomIndex];
   }
 
-  public int RandomBlockSpawnAmount()
+  public int RandomSpawnColorAmount()
   {
-    return UnityEngine.Random.Range(SpawnAmountRange.x, SpawnAmountRange.y);
+    return UnityEngine.Random.Range(SpawnColorAmountRange.x, SpawnColorAmountRange.y);
+  }
+
+  public int RandomSpawnAmountPerColor()
+  {
+    return UnityEngine.Random.Range(SpawnAmountPerColorRange.x, SpawnAmountPerColorRange.y);
   }
 
   public void CheckSpawners()
