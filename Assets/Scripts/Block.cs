@@ -7,8 +7,9 @@ public class Block : MonoBehaviour
   private Collider _collider;
   private float _width;
   private float _duration;
-  private float _durationDestroyMin;
-  private float _durationDestroyMax;
+  private float _durationY;
+  private float _durationDestroy;
+  private float _tweenDurationScaleFactorBase;
   private Ease _ease;
   private Ease _easeDestroy;
   private MaterialRecolor _materialRecolor;
@@ -20,10 +21,12 @@ public class Block : MonoBehaviour
     _collider = GetComponent<Collider>();
     _width = GameManager.Instance.BlockWidth;
     _duration = GameManager.Instance.FlipDuration;
+    _durationY = _duration / 2f;
+    _durationDestroy = GameManager.Instance.DestroyDuration;
     _ease = GameManager.Instance.EaseDefault;
     _easeDestroy = GameManager.Instance.EaseDestroy;
-    _durationDestroyMin = _duration / 2f;
-    _durationDestroyMax = _duration * 4f;
+    _tweenDurationScaleFactorBase = GameManager.Instance.TweenDurationScaleFactorBase;
+
 
     _startScale = transform.localScale;
 
@@ -74,21 +77,12 @@ public class Block : MonoBehaviour
 
   public void Flip(BlockDirection blockRotationDirection, float localY, int movedBefore, Action onComplete)
   {
-    float duration = _duration;
-    float durationY = _durationDestroyMin;
+    // Make tweens faster
+    float scaleFactor = Mathf.Pow(_tweenDurationScaleFactorBase, movedBefore + 1);
 
-    if (movedBefore > 0)
-    {
-      // Make tweens faster
-
-      float scaleFactor = Mathf.Pow(0.9f, movedBefore); // Adjust the base (0.9f) as needed
-
-      Debug.Log("scaleFactor: " + scaleFactor);
-
-      // Apply scaling factor to durations
-      duration *= scaleFactor;
-      durationY *= scaleFactor;
-    }
+    // Apply scaling factor to durations
+    float duration = _duration * scaleFactor;
+    float durationY = _durationY * scaleFactor;
 
     if (transform.localPosition.y != localY)
     {
@@ -113,10 +107,14 @@ public class Block : MonoBehaviour
 
   public void DestroyAnimation(int index, int amount, Action onComplete)
   {
-    float t = 1 - (float)(index + 1) / amount;
+    float t = 1 - (float)index / amount;
 
-    float duration = Mathf.Lerp(_durationDestroyMin, _durationDestroyMax, t);
-    float delay = _durationDestroyMax - duration;
+    // Make tweens faster
+    float scaleFactor = Mathf.Pow(_tweenDurationScaleFactorBase, index + 1);
+
+    // Apply scaling factor to durations
+    float duration = _durationDestroy * scaleFactor;
+    float delay = _durationDestroy * _tweenDurationScaleFactorBase - duration;
 
     Tween.Scale(transform, endValue: 0, duration: duration, ease: _easeDestroy, startDelay: delay)
       .OnComplete(() =>

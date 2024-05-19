@@ -28,11 +28,13 @@ public class GameManager : MonoBehaviour
   public float MoveBackDuration = 0.5f;
   public float PlaceDuration = 0.25f;
   public float FlipDuration = 0.2f;
+  public float DestroyDuration = 0.2f;
   public List<BlockColorType> AvailableColors = new();
   public Vector2Int SpawnColorAmountRange;
   public Vector2Int SpawnAmountPerColorRange;
   public Ease EaseDefault = Ease.OutSine;
   public Ease EaseDestroy = Ease.OutSine;
+  public float TweenDurationScaleFactorBase = 0.9f;
   [HideInInspector] public List<SpawnerSlot> Spawners = new();
 
   public BlockColorType? RandomBlockColor(List<BlockColorType> alreadyUsedColors)
