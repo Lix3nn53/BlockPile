@@ -9,6 +9,7 @@ public class BlockPile : MonoBehaviour
 {
   private bool _isPickable = true;
   public bool IsPickable => _isPickable;
+  private Player _player;
   private GameObjectPool _blockPool;
   private float _blockHeight;
   private Ease _ease;
@@ -34,6 +35,7 @@ public class BlockPile : MonoBehaviour
 
   public void Initialize()
   {
+    _player = Player.Instance;
     _blockPool = AssetManager.Instance.BlockPool;
     _blockHeight = GameManager.Instance.BlockHeight;
     _ease = GameManager.Instance.EaseDefault;
@@ -233,6 +235,8 @@ public class BlockPile : MonoBehaviour
             // Last block
             block.DestroyAnimation(childCount - 1 - i, topColorCount, () =>
             {
+              _player.Data.TotalExp += topColorCount;
+
               IsMovingBlocks = false;
               transform.parent = null;
               gameObject.SetActive(false); // Disable self and return to pool
@@ -243,6 +247,8 @@ public class BlockPile : MonoBehaviour
             // Last block of current color
             block.DestroyAnimation(childCount - 1 - i, topColorCount, () =>
             {
+              _player.Data.TotalExp += topColorCount;
+
               IsMovingBlocks = false;
               onCompleteWithBlocksRemaining?.Invoke();
             });
