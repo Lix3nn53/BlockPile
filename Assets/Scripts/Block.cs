@@ -7,7 +7,8 @@ public class Block : MonoBehaviour
   private Collider _collider;
   private float _width;
   private float _duration;
-  private float _durationDestroy;
+  private float _durationDestroyMin;
+  private float _durationDestroyMax;
   private Ease _ease;
   private Ease _easeDestroy;
   private MaterialRecolor _materialRecolor;
@@ -21,7 +22,8 @@ public class Block : MonoBehaviour
     _duration = GameManager.Instance.FlipDuration;
     _ease = GameManager.Instance.EaseDefault;
     _easeDestroy = GameManager.Instance.EaseDestroy;
-    _durationDestroy = _duration / 2f;
+    _durationDestroyMin = _duration / 2f;
+    _durationDestroyMax = _duration * 4f;
 
     _startScale = transform.localScale;
 
@@ -50,12 +52,7 @@ public class Block : MonoBehaviour
     }
   }
 
-  public void Test()
-  {
-    Rotate(BlockDirection.RIGHT);
-  }
-
-  public void Rotate(BlockDirection blockRotationDirection, Action onComplete = null)
+  public void Rotate(BlockDirection blockRotationDirection, float duration, Action onComplete = null)
   {
     BlockRotation blockRotation = blockRotationDirection.GetBlockRotation();
     Vector3 direction = blockRotation.Direction;
@@ -66,7 +63,7 @@ public class Block : MonoBehaviour
     child.position = child.position + (direction * _width / 2);
     transform.position = transform.position + (-direction * _width / 2);
 
-    Tween.EulerAngles(transform, startValue: Vector3.zero, endValue: rotation, duration: _duration, ease: _ease).OnComplete(() =>
+    Tween.EulerAngles(transform, startValue: Vector3.zero, endValue: rotation, duration: duration, ease: _ease).OnComplete(() =>
     {
       transform.SetPositionAndRotation(child.position, Quaternion.identity);
       child.localPosition = Vector3.zero;
@@ -75,13 +72,31 @@ public class Block : MonoBehaviour
     });
   }
 
-  public void Move(BlockDirection blockRotationDirection, float localY, Action onComplete)
+  public void Flip(BlockDirection blockRotationDirection, float localY, int movedBefore, Action onComplete)
   {
+    float duration = _duration;
+    float durationY = _durationDestroyMin;
+
+    if (movedBefore > 0)
+    {
+      // Make tweens faster
+
+      float scaleFactor = Mathf.Pow(0.9f, movedBefore); // Adjust the base (0.9f) as needed
+
+      Debug.Log("scaleFactor: " + scaleFactor);
+
+      // Apply scaling factor to durations
+      duration *= scaleFactor;
+      durationY *= scaleFactor;
+    }
+
     if (transform.localPosition.y != localY)
     {
-      Tween.LocalPositionY(transform, endValue: localY, duration: _durationDestroy, ease: _ease);
+      Tween.LocalPositionY(transform, endValue: localY, duration: durationY, ease: _ease);
     }
-    Rotate(blockRotationDirection, onComplete);
+
+
+    Rotate(blockRotationDirection, duration, onComplete);
   }
 
   public void SetColor(BlockColorType color)
@@ -96,9 +111,14 @@ public class Block : MonoBehaviour
     }
   }
 
-  public void DestroyAnimation(int index, Action onComplete)
+  public void DestroyAnimation(int index, int amount, Action onComplete)
   {
-    Tween.Scale(transform, endValue: 0, duration: _durationDestroy * (index + 1), ease: _easeDestroy, startDelay: _durationDestroy * (index + 1))
+    float t = 1 - (float)(index + 1) / amount;
+
+    float duration = Mathf.Lerp(_durationDestroyMin, _durationDestroyMax, t);
+    float delay = _durationDestroyMax - duration;
+
+    Tween.Scale(transform, endValue: 0, duration: duration, ease: _easeDestroy, startDelay: delay)
       .OnComplete(() =>
       {
         transform.parent = null;

@@ -108,11 +108,11 @@ public class GridSlot : GridSlotBase
     current.IsMovingBlocks = true;
     target.IsMovingBlocks = true;
 
-    return TryMoveTopBlockRecursive(direction, current, target, directionsNotChecked, false);
+    return TryMoveTopBlockRecursive(direction, current, target, directionsNotChecked, 0);
   }
 
   public void OnMoveTopBlock(BlockDirection direction, BlockPile current, BlockPile target, Block block,
-    List<BlockDirection> directionsNotChecked, bool movedBefore)
+    List<BlockDirection> directionsNotChecked, int movedBefore)
   {
     target.PlaceBlock(block);
 
@@ -120,7 +120,7 @@ public class GridSlot : GridSlotBase
   }
 
   public bool TryMoveTopBlockRecursive(BlockDirection direction, BlockPile current, BlockPile target,
-    List<BlockDirection> directionsNotChecked, bool movedBefore)
+    List<BlockDirection> directionsNotChecked, int movedBefore)
   {
     bool moved = false;
     Block topBlock = current.GetTopBlock();
@@ -132,8 +132,10 @@ public class GridSlot : GridSlotBase
       if (target.CanMove(topBlock))
       {
         float localY = target.GetNextLocalHeight();
-        topBlock.Move(direction, localY, () => OnMoveTopBlock(direction, current, target, topBlock, directionsNotChecked, true));
+        topBlock.Flip(direction, localY, movedBefore, () => OnMoveTopBlock(direction, current, target, topBlock, directionsNotChecked, movedBefore + 1));
+
         moved = true;
+        movedBefore++;
       }
     }
     else
@@ -152,9 +154,8 @@ public class GridSlot : GridSlotBase
       target.IsMovingBlocks = false;
     }
 
-    if (!moved && movedBefore)
+    if (!moved && movedBefore > 0)
     {
-      Debug.Log("AAAAA", gameObject);
       // Couldnt move from current to target
       // Try to move to target from other neighbours
 

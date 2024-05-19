@@ -226,7 +226,7 @@ public class BlockPile : MonoBehaviour
           if (i == 0)
           {
             // Last block
-            block.DestroyAnimation(childCount - 1 - i, () =>
+            block.DestroyAnimation(childCount - 1 - i, topColorCount, () =>
             {
               IsMovingBlocks = false;
               transform.parent = null;
@@ -236,7 +236,7 @@ public class BlockPile : MonoBehaviour
           else if (i == childCount - topColorCount)
           {
             // Last block of current color
-            block.DestroyAnimation(childCount - 1 - i, () =>
+            block.DestroyAnimation(childCount - 1 - i, topColorCount, () =>
             {
               IsMovingBlocks = false;
               onCompleteWithBlocksRemaining?.Invoke();
@@ -244,7 +244,7 @@ public class BlockPile : MonoBehaviour
           }
           else
           {
-            block.DestroyAnimation(childCount - 1 - i, null);
+            block.DestroyAnimation(childCount - 1 - i, topColorCount, null);
           }
         }
       }
