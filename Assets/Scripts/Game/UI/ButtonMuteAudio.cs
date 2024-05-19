@@ -6,7 +6,6 @@ using UnityEngine.UI;
 public class ButtonMuteAudio : MonoBehaviour
 {
   private Button _button;
-  private AudioManager _audioManager;
   private AudioMixer _audioMixer;
   [SerializeField] private Sprite _spriteOn;
   [SerializeField] private Sprite _spriteOff;
@@ -17,7 +16,6 @@ public class ButtonMuteAudio : MonoBehaviour
   {
     _button = GetComponent<Button>();
 
-    _audioManager = AudioManager.instance;
     _audioMixer = AssetManager.Instance.AudioMixer;
 
     _button.onClick.AddListener(OnClick);
