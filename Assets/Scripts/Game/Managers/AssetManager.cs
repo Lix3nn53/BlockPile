@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Lix.Core;
 using AYellowpaper.SerializedCollections;
+using UnityEngine.Audio;
 
 public class AssetManager : MonoBehaviour
 {
@@ -39,4 +40,5 @@ public class AssetManager : MonoBehaviour
 
         return result;
     }
+    public AudioMixer AudioMixer;
 }

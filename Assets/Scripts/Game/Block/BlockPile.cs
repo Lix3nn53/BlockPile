@@ -4,12 +4,14 @@ using UnityEngine;
 using Lix.Core;
 using PrimeTween;
 using System;
+using CarterGames.Assets.AudioManager;
 
 public class BlockPile : MonoBehaviour
 {
   private bool _isPickable = true;
   public bool IsPickable => _isPickable;
   private Player _player;
+  private AudioManager _audioManager;
   private GameObjectPool _blockPool;
   private float _blockHeight;
   private Ease _ease;
@@ -35,6 +37,7 @@ public class BlockPile : MonoBehaviour
 
   public void Initialize()
   {
+    _audioManager = AudioManager.instance;
     _player = Player.Instance;
     _blockPool = AssetManager.Instance.BlockPool;
     _blockHeight = GameManager.Instance.BlockHeight;
@@ -101,6 +104,7 @@ public class BlockPile : MonoBehaviour
 
   public void OnPickUp()
   {
+    _audioManager.Play("pickup");
     _isPickable = false;
 
     for (int i = 0; i < transform.childCount; i++)
@@ -114,8 +118,9 @@ public class BlockPile : MonoBehaviour
     }
   }
 
-  public void OnPlace()
+  private void OnPlace()
   {
+    _audioManager.Play("place");
   }
 
   public void OnMoveBackToSpawner()

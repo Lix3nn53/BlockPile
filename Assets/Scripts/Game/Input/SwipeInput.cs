@@ -1,5 +1,4 @@
-using System;
-using PrimeTween;
+using CarterGames.Assets.AudioManager;
 using UnityEngine;
 
 /*
@@ -14,14 +13,12 @@ using UnityEngine;
 public class SwipeInput : MonoBehaviour
 {
     // References
-    private EventManager _eventManager;
     [SerializeField] private float TARGET_HEIGHT = 5f;
     private float _moveBackDuration;
     private BlockPile _blockPile;
     private Vector3 _startPos;
     private void Start()
     {
-        _eventManager = EventManager.Instance;
         _moveBackDuration = GameManager.Instance.MoveBackDuration;
     }
 

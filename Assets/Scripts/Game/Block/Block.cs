@@ -1,4 +1,6 @@
 using System;
+using CarterGames.Assets.AudioManager;
+using Cysharp.Threading.Tasks;
 using PrimeTween;
 using UnityEngine;
 
@@ -15,6 +17,7 @@ public class Block : MonoBehaviour
   private MaterialRecolor _materialRecolor;
   public BlockColorType Color => _materialRecolor.BlockColor;
   private Vector3 _startScale;
+  private AudioManager _audioManager;
 
   private void Start()
   {
@@ -31,6 +34,8 @@ public class Block : MonoBehaviour
     _startScale = transform.localScale;
 
     // SetColor(GameManager.Instance.RandomBlockColor());
+
+    _audioManager = AudioManager.instance;
   }
 
   public void OnPickUp()
@@ -90,8 +95,9 @@ public class Block : MonoBehaviour
       Tween.LocalPositionY(transform, endValue: localY, duration: durationY, ease: _ease);
     }
 
-
     Rotate(blockRotationDirection, duration, onComplete);
+
+    _audioManager.Play("flip");
   }
 
   public void SetColor(BlockColorType color)
@@ -115,6 +121,8 @@ public class Block : MonoBehaviour
     float duration = _durationDestroy * scaleFactor;
     float delay = _durationDestroy * _tweenDurationScaleFactorBase - duration;
 
+    DelayedDestroySFX(delay);
+
     Tween.Scale(transform, endValue: 0, duration: duration, ease: _easeDestroy, startDelay: delay)
       .OnComplete(() =>
       {
@@ -122,5 +130,12 @@ public class Block : MonoBehaviour
         gameObject.SetActive(false);
         onComplete?.Invoke();
       });
+  }
+
+  private async void DelayedDestroySFX(float delay)
+  {
+    await UniTask.Delay((int)(delay * 1000));
+
+    _audioManager.Play("destroy");
   }
 }

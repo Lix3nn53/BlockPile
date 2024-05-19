@@ -23,8 +23,7 @@ public class ExperienceSliderController : MonoBehaviour
     _player.Data.OnExperienceChange -= OnExpChanged;
   }
 
-  // This method is called whenever the slider value changes
-  void OnExpChanged()
+  private void OnExpChanged()
   {
     int current = _player.Data.GetCurrentExperience();
     int req = _player.Data.GetRequiredExperience();
