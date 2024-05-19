@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using PrimeTween;
 using UnityEngine;
+using Cysharp.Threading.Tasks;
 
 public class GameManager : MonoBehaviour
 {
@@ -35,7 +36,9 @@ public class GameManager : MonoBehaviour
   public Ease EaseDefault = Ease.OutSine;
   public Ease EaseDestroy = Ease.OutSine;
   public float TweenDurationScaleFactorBase = 0.9f;
-  [HideInInspector] public List<SpawnerSlot> Spawners = new();
+  public Transform SpawnPoint;
+  public int SpawnDelayIntervalMS = 250;
+  public List<SpawnerSlot> Spawners = new();
 
   public BlockColorType? RandomBlockColor(List<BlockColorType> alreadyUsedColors)
   {
@@ -69,6 +72,18 @@ public class GameManager : MonoBehaviour
     return UnityEngine.Random.Range(SpawnAmountPerColorRange.x, SpawnAmountPerColorRange.y);
   }
 
+  private int _readySpawners = 0;
+
+  public void OnSpawnerReady()
+  {
+    _readySpawners++;
+
+    if (_readySpawners == Spawners.Count)
+    {
+      CheckSpawners();
+    }
+  }
+
   public void CheckSpawners()
   {
     bool allEmpty = true;
@@ -84,10 +99,17 @@ public class GameManager : MonoBehaviour
     if (allEmpty)
     {
       // all spawners are empty, spawn blocks
-      foreach (SpawnerSlot slot in Spawners)
+      for (int i = 0; i < Spawners.Count; i++)
       {
-        slot.SpawnBlockPile();
+        SpawnWithDelay(i);
       }
     }
+  }
+
+  private async void SpawnWithDelay(int index)
+  {
+    await UniTask.Delay(SpawnDelayIntervalMS * index);
+
+    Spawners[index].SpawnBlockPile(SpawnPoint);
   }
 }

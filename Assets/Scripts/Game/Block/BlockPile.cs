@@ -42,6 +42,11 @@ public class BlockPile : MonoBehaviour
     IsMovingBlocks = false;
   }
 
+  public void OnSpawnAnimationComplete()
+  {
+    _isPickable = true;
+  }
+
   public void SpawnBlock()
   {
     List<BlockColorType> alreadyUsedColors = new List<BlockColorType>();

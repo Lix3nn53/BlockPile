@@ -23,15 +23,10 @@ public abstract class GridSlotBase : MonoBehaviour
     blockPile.PlaceAnimation(transform.position + localPos, _placeDuration, OnBlockPilePlaceFinished);
   }
 
-  public void SetBlockPile(BlockPile blockPile)
-  {
-    blockPile.transform.localPosition = OnBlockPileStartPlace(blockPile);
-    blockPile.gameObject.SetActive(true);
-  }
-
-  private Vector3 OnBlockPileStartPlace(BlockPile blockPile)
+  public Vector3 OnBlockPileStartPlace(BlockPile blockPile)
   {
     blockPile.transform.parent = transform;
+
     return new Vector3(0, _offsetY, 0);
   }
 

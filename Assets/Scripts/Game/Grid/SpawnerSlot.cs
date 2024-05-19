@@ -6,25 +6,25 @@ using Lix.Core;
 public class SpawnerSlot : GridSlotBase
 {
   private GameObjectPool _blockPilePool;
+  private float _spawnDuration;
 
   public override void Start()
   {
     base.Start();
 
+    _spawnDuration = GameManager.Instance.MoveBackDuration;
+
     // Color
     MaterialRecolor = new MaterialRecolor(GetComponentInChildren<Renderer>(), BlockColorType.GRAY);
-
-    // Add self to GameManager
-    GameManager.Instance.Spawners.Add(this);
 
     // Block Pile Pool
     _blockPilePool = AssetManager.Instance.BlockPilePool;
 
     // Spawn
-    SpawnBlockPile();
+    GameManager.Instance.OnSpawnerReady();
   }
 
-  public void SpawnBlockPile()
+  public void SpawnBlockPile(Transform spawnPoint)
   {
     BlockPile BlockPile = _blockPilePool.Pool.Get().GetComponent<BlockPile>();
 
@@ -35,6 +35,23 @@ public class SpawnerSlot : GridSlotBase
       BlockPile.SpawnBlock();
     }
 
-    SetBlockPile(BlockPile);
+    Vector3 localPos = OnBlockPileStartPlace(BlockPile);
+
+    if (spawnPoint == null)
+    {
+      BlockPile.transform.localPosition = localPos;
+      BlockPile.gameObject.SetActive(true);
+    }
+    else
+    {
+      BlockPile.transform.position = spawnPoint.position;
+      BlockPile.gameObject.SetActive(true);
+      BlockPile.PlaceAnimation(transform.position + localPos, _spawnDuration, OnBlockPilePlaceFinished);
+    }
+  }
+
+  public override void OnBlockPilePlaceFinished()
+  {
+    BlockPile.OnSpawnAnimationComplete();
   }
 }
