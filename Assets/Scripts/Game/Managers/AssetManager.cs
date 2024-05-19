@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Lix.Core;
+using AYellowpaper.SerializedCollections;
 
 public class AssetManager : MonoBehaviour
 {
@@ -26,4 +27,16 @@ public class AssetManager : MonoBehaviour
     public GameObjectPool GridSlotPool;
     public GameObjectPool BlockPilePool;
     public GameObjectPool BlockPool;
+    [SerializeField] private SerializedDictionary<BlockColorType, string> ColorCodes = new SerializedDictionary<BlockColorType, string>();
+    public Color GetColor(BlockColorType color)
+    {
+        Color result = Color.white;
+
+        if (ColorCodes.ContainsKey(color))
+        {
+            ColorUtility.TryParseHtmlString("#" + ColorCodes[color], out result);
+        }
+
+        return result;
+    }
 }

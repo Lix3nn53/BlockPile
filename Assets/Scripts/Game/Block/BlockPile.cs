@@ -26,7 +26,7 @@ public class BlockPile : MonoBehaviour
       GridSlot slot = GetComponentInParent<GridSlot>();
       if (slot != null)
       {
-        BlockColorType color = _isMovingBlocks ? BlockColorType.RED : BlockColorType.GRAY;
+        BlockColorType color = _isMovingBlocks ? BlockColorType.SLOT_DISABLED : BlockColorType.SLOT;
         slot.MaterialRecolor.SetColor(color);
       }
     }

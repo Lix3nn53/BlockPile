@@ -17,7 +17,7 @@ public class GridSlot : GridSlotBase
     _gameManager = GameManager.Instance;
     _gameGrid = GameGrid.Instance;
 
-    MaterialRecolor = new MaterialRecolor(GetComponent<Renderer>(), BlockColorType.GRAY);
+    MaterialRecolor = new MaterialRecolor(GetComponent<Renderer>(), BlockColorType.SLOT);
   }
 
   public bool IsValid()

@@ -408,7 +408,7 @@ Light:
     m_Type: 2
     m_Resolution: -1
     m_CustomResolution: -1
-    m_Strength: 0.8
+    m_Strength: 0.5
     m_Bias: 0.05
     m_NormalBias: 0.4
     m_NearPlane: 0.2
@@ -2058,9 +2058,9 @@ MonoBehaviour:
   PlaceDuration: 0.25
   FlipDuration: 0.2
   DestroyDuration: 1
-  AvailableColors: 0000000005000000
-  SpawnColorAmountRange: {x: 2, y: 4}
-  SpawnAmountPerColorRange: {x: 4, y: 8}
+  AvailableColors: 0000000001000000020000000300000004000000
+  SpawnColorAmountRange: {x: 1, y: 3}
+  SpawnAmountPerColorRange: {x: 3, y: 8}
   EaseDefault: 3
   EaseDestroy: 2
   TweenDurationScaleFactorBase: 0.9
@@ -2135,6 +2135,22 @@ MonoBehaviour:
   GridSlotPool: {fileID: 827385028}
   BlockPilePool: {fileID: 881556682}
   BlockPool: {fileID: 1912560913}
+  ColorCodes:
+    _serializedList:
+    - Key: 0
+      Value: 41a6f6
+    - Key: 1
+      Value: e43b44
+    - Key: 2
+      Value: feae34
+    - Key: 3
+      Value: fee761
+    - Key: 4
+      Value: 7b2cbf
+    - Key: 5
+      Value: 94b0c2
+    - Key: 6
+      Value: 333c57
 --- !u!1001 &40326013835458171
 PrefabInstance:
   m_ObjectHideFlags: 0

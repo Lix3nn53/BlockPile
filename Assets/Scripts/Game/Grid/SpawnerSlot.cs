@@ -15,7 +15,7 @@ public class SpawnerSlot : GridSlotBase
     _spawnDuration = GameManager.Instance.MoveBackDuration;
 
     // Color
-    MaterialRecolor = new MaterialRecolor(GetComponentInChildren<Renderer>(), BlockColorType.GRAY);
+    MaterialRecolor = new MaterialRecolor(GetComponentInChildren<Renderer>(), BlockColorType.SLOT);
 
     // Block Pile Pool
     _blockPilePool = AssetManager.Instance.BlockPilePool;
